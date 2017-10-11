@@ -40,7 +40,42 @@ var gShipTypes =  initShipTypes( );
 var gCoalitionData = initCoalitions( );
 var gCoalitionNames = _.sortBy( _.uniq( _.pluck( gCoalitionData, 'shortName' )), function( X ) { return X; } );
 var gFactionData = initFactions( );
-
+var gCharacterNameCache = _.memoize(function(id) {
+  var request = new XMLHttpRequest();
+  request.open("GET", "https://esi.tech.ccp.is/v1/characters/names/?character_ids="+id, false);
+  request.send(null);
+  if (request.status == 200) {
+    var body = JSON.parse(request.response);
+    if (body.length > 0) {
+      return body[0]["character_name"];
+    }
+  }
+  return null;
+});
+var gCorporationNameCache = _.memoize(function(id) {
+  var request = new XMLHttpRequest();
+  request.open("GET", "https://esi.tech.ccp.is/v1/corporations/names/?corporation_ids="+id, false);
+  request.send(null);
+  if (request.status == 200) {
+    var body = JSON.parse(request.response);
+    if (body.length > 0) {
+      return body[0]["corporation_name"];
+    }
+  }
+  return null;
+});
+var gAllianceNameCache = _.memoize(function(id) {
+  var request = new XMLHttpRequest();
+  request.open("GET", "https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids="+id, false);
+  request.send(null);
+  if (request.status == 200) {
+    var body = JSON.parse(request.response);
+    if (body.length > 0) {
+      return body[0]["alliance_name"];
+    }
+  }
+  return null;
+});
 var gGroups = [];
 var gPlayers = [];
 var gTeams = [];

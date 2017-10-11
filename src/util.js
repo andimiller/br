@@ -121,9 +121,9 @@ function parse_url_params( url )
   return vars;
 }
 
-function shipTypeIDtoName( shipTypeID )
+function ship_type_idtoName( ship_type_id )
 {
-  var name = _.find( gShipTypes, function( shiptype ) { return shiptype.I == shipTypeID; } );
+  var name = _.find( gShipTypes, function( shiptype ) { return shiptype.I == ship_type_id; } );
   return name == undefined ? 'unknown' : name.N;
 }
 
@@ -139,9 +139,9 @@ function getShipClassOrder(shipID)
   return shipClass == undefined ? 999999 : shipClass.O;
 }
 
-function shipTypeIDtoType( shipTypeID )
+function ship_type_idtoType( ship_type_id )
 {
-  var name = _.find( gShipTypes, function( shiptype ) { return shiptype.I == shipTypeID; } );
+  var name = _.find( gShipTypes, function( shiptype ) { return shiptype.I == ship_type_id; } );
   var returnvalue = name == undefined ? 'unknown' : name.G;
   if(typeof returnvalue != 'undefined'){return returnvalue;}
   return 'unknown';
@@ -270,9 +270,9 @@ function assert( condition )
   }
 }
 
-function isCapsule( shipTypeID )
+function isCapsule( ship_type_id )
 {
-  return shipTypeID == 670 || shipTypeID == 33328;
+  return ship_type_id == 670 || ship_type_id == 33328;
 }
 
 function waitCursor( onOff )

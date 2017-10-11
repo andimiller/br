@@ -84,8 +84,8 @@ function buildKillTable( )
       eveImageLink( 'Alliance', killMail.victim.allianceID ),   zKillLink( 'alliance', killMail.victim.allianceID, killMail.victim.allianceName ),
       //killMail.attackers.length,
       Math.round( killMail.victim.damage_taken / 1000 ),
-      eveImageLink( 'Render', killMail.victim.shipTypeID ),     zKillLink( 'detail', killMail.killID, shipTypeIDtoName( killMail.victim.shipTypeID )),
-      shipTypeIDtoType( killMail.victim.shipTypeID ),
+      eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killID, ship_type_idtoName( killMail.victim.ship_type_id )),
+      ship_type_idtoType( killMail.victim.ship_type_id ),
       solarSystemIDtoName(killMail.solarSystemID),
       killMail.killTime.split( ' ' )[ 1 ].slice(0,-3),
       //killMail.killID,
@@ -180,7 +180,7 @@ function draw_summary_table( target, teams )
         {
           var rowData = createEmptyArray( SHIP_DATA_SIZE+(teams.length*TEAM_DATA_SIZE) );
           rowData[SHIP_ID_INDEX] = ship.shipID;
-          rowData[SHIP_NAME_INDEX] = shipTypeIDtoName(ship.shipID);
+          rowData[SHIP_NAME_INDEX] = ship_type_idtoName(ship.shipID);
           rowData[SHIP_CLASS_INDEX] = getShipClass(ship.shipID);
           rowData[SHIP_ORDER_INDEX] = getShipClassOrder(ship.shipID);
           rowData[(targetTeam*TEAM_DATA_SIZE)+SHIP_FIELDED_INDEX] = ship.fielded;
@@ -509,13 +509,13 @@ function buildInvolved()
           var invEntry = initInvolvedEntry( player );
 //          invEntry.kills = ship.kills.length;
           teamLosses[ player.group.team ] += ship.lost;
-          var temp = _.find( gShipTypes, function( X ) { return X.I == ship.shipTypeID; } );
+          var temp = _.find( gShipTypes, function( X ) { return X.I == ship.ship_type_id; } );
           if ( temp != undefined )
             console.log( '(' + teamLosses[ player.group.team ] + ') adding ' + ship.lost + ' loss(es) to team #' + player.group.team + ' for ' + player.name + '(' + player.corporationName + ') [' + player.allianceName + ']: ' + temp.N );
           // this assumes the kills list is sorted
           _.each( ship.kills, function( kill, killIdx )
           {
-            invEntry.shipID = ship.shipTypeID;
+            invEntry.shipID = ship.ship_type_id;
             invEntry.time   = kill.time;
             if ( kill.victim )
             {
@@ -868,7 +868,7 @@ function getAttackersAndShip(killID)
   var attackers = [];
   var thisKill = _.find(gData, function(kill){return kill.killID ==killID});
   _.each(thisKill.attackers, function(attacker){
-    attackers.push([attacker.characterID, attacker.shipTypeID]);
+    attackers.push([attacker.characterID, attacker.ship_type_id]);
   });
   return attackers;
 }
@@ -1629,7 +1629,7 @@ function generateBattleTimeline( target )
       //                  ship in the kill list
     if ( lhs.killTime == rhs.killTime )
     {
-      return isCapsule( lhs.victim.shipTypeID ) - isCapsule( rhs.victim.shipTypeID );
+      return isCapsule( lhs.victim.ship_type_id ) - isCapsule( rhs.victim.ship_type_id );
     }
     return lhs.killTime > rhs.killTime ? 1 : -1;
   } );
@@ -1676,7 +1676,7 @@ function generateBattleTimeline( target )
           invEntry.killID = data.killID;
           invEntry.victim = true;
           invEntry.podKillID = 0;
-          invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == data.victim.shipTypeID; } );
+          invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == data.victim.ship_type_id; } );
           if ( invEntry.shipData == undefined )
           {
             invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == 0; } );

@@ -310,7 +310,7 @@ function build_data( )
         //                  ship in the kill list
         if ( lhs.time == rhs.time )
         {
-          return isCapsule( lhs.shipTypeID ) - isCapsule( rhs.shipTypeID );
+          return isCapsule( lhs.ship_type_id ) - isCapsule( rhs.ship_type_id );
         }
         return lhs.time > rhs.time ? 1 : -1;
       } );
@@ -319,7 +319,7 @@ function build_data( )
       {
         // pf:  i don't think this is a good idea, this will end up discarding relevant kills at some point
         // ignore if same timestamp as last victim
-        if( prevWasVictim && lastVictimTime != kill.time && kill.shipTypeID != 0 )
+        if( prevWasVictim && lastVictimTime != kill.time && kill.ship_type_id != 0 )
         {
           ++fielded;
         }
@@ -378,7 +378,7 @@ function parseKillRecord( kill )
   }
 
   // Process victim
-  if ( kill.victim.shipTypeID == 32250 )
+  if ( kill.victim.ship_type_id == 32250 )
   {
     var foo = 0;
   }
@@ -403,8 +403,8 @@ function handleUnknownShips()
     //       will mistakenly assign damage to the wrong ship type.
     //       The correct mechanism would be to process things in a chronological fashion and
     //       ignore the unknown entries as they appear.
-    player.ships = _.sortBy( player.ships, function( ship ) { return ship.shipTypeID; } );
-    var unknownShip = _.find( player.ships, function( ship ) { return ship.shipTypeID == 0; } );
+    player.ships = _.sortBy( player.ships, function( ship ) { return ship.ship_type_id; } );
+    var unknownShip = _.find( player.ships, function( ship ) { return ship.ship_type_id == 0; } );
     if( unknownShip != undefined && player.ships.length > 1 )
     {
       _.each( player.ships[ 0 ].kills, function( kill )
@@ -440,13 +440,13 @@ function updateShip( player, kill, victim )
   var playerIndex = checkPlayerExists( player );
   var shipIndex = checkShipExists( player, playerIndex );
   var newKill = new Object;
-  newKill.killID = kill.killID;
-  newKill.time = kill.killTime;
+  newKill.killID = kill.killmail_id;
+  newKill.time = kill.killmail_time;
   assert( victim != undefined );
   newKill.player = gPlayers[ checkPlayerExists( victim ) ];
   newKill.victim = ( player.characterID == victim.characterID );
   newKill.iskLost = 0;
-  newKill.shipTypeID = player.shipTypeID;
+  newKill.ship_type_id = player.ship_type_id;
   if ( newKill.victim )
   {
     assert( gTotalDamage != undefined );
@@ -455,7 +455,7 @@ function updateShip( player, kill, victim )
     assert( player.damage_taken != NaN );
     gTotalDamage += Number(player.damage_taken);
     newKill.damage = Number(player.damage_taken);
-    newKill.finalBlow = 0;
+    newKill.final_blow = 0;
     newKill.weaponTypeID = 0;
     if ( kill.zkb != undefined && kill.zkb.totalValue != undefined )
     {
@@ -465,7 +465,7 @@ function updateShip( player, kill, victim )
   else
   {
     newKill.damage = Number(player.damageDone);
-    newKill.finalBlow = player.finalBlow;
+    newKill.final_blow = player.final_blow;
     newKill.weaponTypeID = player.weaponID;
   }
   assert( gPlayers[ playerIndex ].ships[ shipIndex ] != undefined );
@@ -523,13 +523,13 @@ function addplayer( player )
   assert( player.characterName != DEBUG_PLAYER );
   var newplayer = new Object;
   newplayer.allianceID       = player.alliance_id;
-  newplayer.allianceName     = player.alliance_id;
+  newplayer.allianceName     = gAllianceNameCache(player.alliance_id);
   newplayer.corporationID    = player.corporation_id;
-  newplayer.corporationName  = player.corporation_id;
+  newplayer.corporationName  = gCorporationNameCache(player.corporation_id);
   newplayer.factionID        = player.faction_id;
   newplayer.factionName      = player.faction_id;
   newplayer.id               = player.character_id;
-  newplayer.name             = player.character_id; // Name;
+  newplayer.name             = gCharacterNameCache(player.character_id); //player.character_id; // Name;
   newplayer.ships            = [];
   newplayer.index            = gPlayers.length;
   newplayer.damageDealt      = 0;
@@ -540,13 +540,13 @@ function addplayer( player )
 
 function checkShipExists( player, playerIndex )
 {
-  var foundShip = _.find( gPlayers[ playerIndex ].ships, function( testShip ){ return player.shipTypeID == testShip.shipTypeID });
+  var foundShip = _.find( gPlayers[ playerIndex ].ships, function( testShip ){ return player.ship_type_id == testShip.ship_type_id });
   return foundShip != undefined ? foundShip.index : addship( player, playerIndex );
 }
 
 function addship( player, playerIndex )
 {
-  if( isCapsule( player.shipTypeID ))
+  if( isCapsule( player.ship_type_id ))
   {
     ++gSummaryPods;
   }
@@ -559,7 +559,7 @@ function addship( player, playerIndex )
   newship.iskLost = 0;
   newship.damage_taken = 0;
   newship.damageDealt = 0;
-  newship.shipTypeID = player.shipTypeID;
+  newship.ship_type_id = player.ship_type_id;
   newship.index = gPlayers[ playerIndex ].ships.length
   gPlayers[ playerIndex ].ships.push( newship );
   return newship.index;
@@ -654,14 +654,14 @@ function updateGroup( groupIndex, player )
 
 function checkGroupShipExists( group, ship )
 {
-  var foundShip = _.find( group.ships, function( testShip ) { return ship.shipTypeID == testShip.shipID } );
+  var foundShip = _.find( group.ships, function( testShip ) { return ship.ship_type_id == testShip.shipID } );
   return foundShip != undefined ? foundShip : addGroupShip( ship, group );
 }
 
 function addGroupShip( ship, group )
 {
   var newship = new Object;
-  newship.shipID = ship.shipTypeID;
+  newship.shipID = ship.ship_type_id;
   newship.lost = 0;
   newship.fielded = 0;
   newship.iskLost = 0;
