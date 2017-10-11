@@ -703,13 +703,13 @@ function  setRIDtext(teamIDX,invIndex)
   
   var target = gCalculatedInvolved[teamIDX][invIndex];
   $('#RIDname').empty();
-  $('#RIDname').append('<img src="http://image.eveonline.com/Character/'+target.playerID+'_32.jpg" style="width: 16px;">'+target.playerName);
+  $('#RIDname').append('<img src="https://image.eveonline.com/Character/'+target.playerID+'_32.jpg" style="width: 16px;">'+target.playerName);
   $('#RIDship').empty();
   $('#RIDship').append(target.shipData.N);
   $('#RIDcorp').empty();
-  $('#RIDcorp').append('<img src="http://image.eveonline.com/Corporation/'+target.corporationID+'_32.png" style="width: 16px;">'+target.corporationName);
+  $('#RIDcorp').append('<img src="https://image.eveonline.com/Corporation/'+target.corporationID+'_32.png" style="width: 16px;">'+target.corporationName);
   $('#RIDalliance').empty();
-  $('#RIDalliance').append('<img src="http://image.eveonline.com/Alliance/'+target.allianceID+'_32.png" style="width: 16px;">'+target.allianceName);
+  $('#RIDalliance').append('<img src="https://image.eveonline.com/Alliance/'+target.allianceID+'_32.png" style="width: 16px;">'+target.allianceName);
   $('#RIDclass').empty();
   $('#RIDclass').append(target.shipData.G);
   $('#RIDkills').empty();
@@ -1045,7 +1045,7 @@ function buildShipIcon(id, teamIDX, shipIndex, titleText)
   html.push( '<td id="'+id+'" class="animAttacker '+rowClass+'">' );
   html.push(   '<img style = "width: '+scale+'px;"class = "'
                 + imgClass
-                + '" src="http://image.eveonline.com/Render/'
+                + '" src="https://image.eveonline.com/Render/'
                 + shipIndex 
                 + '_32.png" title="'
                 + titleText
