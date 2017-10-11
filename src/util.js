@@ -92,7 +92,7 @@ function createZkbDateEnd( ms )
   else{
     return '' + roundUpDate.getUTCFullYear( ) + pad( roundUpDate.getUTCMonth( ) + 1 ) + pad( roundUpDate.getUTCDate( )) + pad( roundUpDate.getUTCHours( )) + pad( roundUpDate.getUTCMinutes( ));
   }
- 
+
 }
 
 function parseZkbDate( zkbDate )
@@ -220,7 +220,7 @@ function zKillLink( service, value, text )
 function eveImageLink( service, id )
 {
   var suffix = ( service == 'Character' ? '_32.jpg' : '_32.png' );
-  return '<img src="http://image.eveonline.com/' + service + '/' + id + suffix + '">';
+  return '<img src="https://image.eveonline.com/' + service + '/' + id + suffix + '">';
 }
 
 function MakeHtml( keyword, cls, content )
