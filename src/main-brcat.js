@@ -41,40 +41,28 @@ var gCoalitionData = initCoalitions( );
 var gCoalitionNames = _.sortBy( _.uniq( _.pluck( gCoalitionData, 'shortName' )), function( X ) { return X; } );
 var gFactionData = initFactions( );
 var gCharacterNameCache = _.memoize(function(id) {
-  var request = new XMLHttpRequest();
-  request.open("GET", "https://esi.tech.ccp.is/v1/characters/names/?character_ids="+id, false);
-  request.send(null);
-  if (request.status == 200) {
-    var body = JSON.parse(request.response);
-    if (body.length > 0) {
-      return body[0]["character_name"];
-    }
-  }
-  return null;
+  return fetch("https://esi.tech.ccp.is/v1/characters/names/?character_ids="+id).then(res => res.json()).then(res => {
+    if (res.length > 0)
+      return res[0]["character_name"];
+    else
+      return null;
+  }).catch(e => null);
 });
 var gCorporationNameCache = _.memoize(function(id) {
-  var request = new XMLHttpRequest();
-  request.open("GET", "https://esi.tech.ccp.is/v1/corporations/names/?corporation_ids="+id, false);
-  request.send(null);
-  if (request.status == 200) {
-    var body = JSON.parse(request.response);
-    if (body.length > 0) {
-      return body[0]["corporation_name"];
-    }
-  }
-  return null;
+  return fetch("https://esi.tech.ccp.is/v1/corporations/names/?corporation_ids="+id).then(res => res.json()).then(res => {
+    if (res.length > 0)
+      return res[0]["corporation_name"];
+    else
+      return null;
+  }).catch(e => null);
 });
 var gAllianceNameCache = _.memoize(function(id) {
-  var request = new XMLHttpRequest();
-  request.open("GET", "https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids="+id, false);
-  request.send(null);
-  if (request.status == 200) {
-    var body = JSON.parse(request.response);
-    if (body.length > 0) {
-      return body[0]["alliance_name"];
-    }
-  }
-  return null;
+  return fetch("https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids="+id).then(res => res.json()).then(res => {
+    if (res.length > 0)
+      return res[0]["alliance_name"];
+    else
+      return null;
+  }).catch(e => null);
 });
 var gGroups = [];
 var gPlayers = [];
