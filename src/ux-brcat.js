@@ -62,8 +62,8 @@ async function startParsing( )
       
   updateShareLink( );
   gProcessingTime = new Date( );
-  for (var index in gEntryWindowData) {
-    var entryWindow = gEntryWindowData[index];
+  await Promise.all(gEntryWindowData.map(async ( entryWindow, index ) =>
+  {
     if ( entryWindow.system.indexOf( 'http' ) >= 0 )
     {
       if(entryWindow.system.indexOf('s') == 4){
@@ -85,7 +85,7 @@ async function startParsing( )
       console.log("loadEntryWindowData", entryWindow);
       await loadEntryWindowData( entryWindow );
     }
-  }
+  } ));
   waitCursor( false );
 }
 
