@@ -63,6 +63,9 @@ function readZkbData( pageNumber, startTime, endTime, systemData , offset )
     console.log('error');
   };
 
+  console.log("doing zkill query");
+  console.log(zKillURL);
+
   xhr.send();
   
   // OLD AJAX CODE
@@ -448,10 +451,10 @@ function updateShip( player, kill, victim )
   {
     assert( gTotalDamage != undefined );
     assert( gTotalDamage != NaN );
-    assert( player.damageTaken != undefined );
-    assert( player.damageTaken != NaN );
-    gTotalDamage += Number(player.damageTaken);
-    newKill.damage = Number(player.damageTaken);
+    assert( player.damage_taken != undefined );
+    assert( player.damage_taken != NaN );
+    gTotalDamage += Number(player.damage_taken);
+    newKill.damage = Number(player.damage_taken);
     newKill.finalBlow = 0;
     newKill.weaponTypeID = 0;
     if ( kill.zkb != undefined && kill.zkb.totalValue != undefined )
@@ -519,18 +522,18 @@ function addplayer( player )
 {
   assert( player.characterName != DEBUG_PLAYER );
   var newplayer = new Object;
-  newplayer.allianceID       = player.allianceID;
-  newplayer.allianceName     = player.allianceName;
-  newplayer.corporationID    = player.corporationID;
-  newplayer.corporationName  = player.corporationName;
-  newplayer.factionID        = player.factionID;
-  newplayer.factionName      = player.factionName;
-  newplayer.id               = player.characterID;
-  newplayer.name             = player.characterName;
+  newplayer.allianceID       = player.alliance_id;
+  newplayer.allianceName     = player.alliance_id;
+  newplayer.corporationID    = player.corporation_id;
+  newplayer.corporationName  = player.corporation_id;
+  newplayer.factionID        = player.faction_id;
+  newplayer.factionName      = player.faction_id;
+  newplayer.id               = player.character_id;
+  newplayer.name             = player.character_id; // Name;
   newplayer.ships            = [];
   newplayer.index            = gPlayers.length;
   newplayer.damageDealt      = 0;
-  newplayer.damageTaken      = 0;
+  newplayer.damage_taken      = 0;
   gPlayers.push( newplayer );
   return newplayer.index;
 }
@@ -554,7 +557,7 @@ function addship( player, playerIndex )
   var newship = new Object;
   newship.kills = [];
   newship.iskLost = 0;
-  newship.damageTaken = 0;
+  newship.damage_taken = 0;
   newship.damageDealt = 0;
   newship.shipTypeID = player.shipTypeID;
   newship.index = gPlayers[ playerIndex ].ships.length
@@ -599,7 +602,7 @@ function addGroup( player )
   newGroup.factionID   = player.factionID;
   newGroup.factionName = player.factionName;
   newGroup.damageDealt = 0;
-  newGroup.damageTaken = 0;
+  newGroup.damage_taken = 0;
   newGroup.killed = 0;
   newGroup.players = 0;
   newGroup.iskLost = 0;
@@ -624,12 +627,12 @@ function updateGroup( groupIndex, player )
     {
       if( kill.victim )
       {
-        assert( group.damageTaken != undefined );
-        assert( group.damageTaken != NaN );
-        assert( groupShip.damageTaken != undefined );
-        assert( groupShip.damageTaken != NaN );
-        group.damageTaken      += kill.damage;
-        groupShip.damageTaken  += kill.damage;
+        assert( group.damage_taken != undefined );
+        assert( group.damage_taken != NaN );
+        assert( groupShip.damage_taken != undefined );
+        assert( groupShip.damage_taken != NaN );
+        group.damage_taken      += kill.damage;
+        groupShip.damage_taken  += kill.damage;
         groupShip.iskLost      += kill.iskLost;
       }
       else
@@ -662,7 +665,7 @@ function addGroupShip( ship, group )
   newship.lost = 0;
   newship.fielded = 0;
   newship.iskLost = 0;
-  newship.damageTaken = 0;
+  newship.damage_taken = 0;
   newship.damageDealt = 0;
   newship.index = group.ships.length;
   group.ships.push( newship );
@@ -674,10 +677,10 @@ function build_teams( groups )
   gTeams = [ [],[] ];
   _.each( groups, function( group, index )
   {
-    var dmgTakenFactor = Math.round( group.damageTaken / gTotalDamage * 1000 ) / 10;
+    var dmgTakenFactor = Math.round( group.damage_taken / gTotalDamage * 1000 ) / 10;
     var dmgDealtFactor = Math.round( group.damageDealt / gTotalDamage * 1000 ) / 10;
     var playerFactor   = Math.round( group.players / Math.min( gPlayers.length, 1000 ) * 1000 ) / 10;
-//    console.log( group.name + ' damage taken: ' + group.damageTaken + ' (' + dmgTakenFactor + '%)' );
+//    console.log( group.name + ' damage taken: ' + group.damage_taken + ' (' + dmgTakenFactor + '%)' );
 //    console.log( group.name + ' damage done : ' + group.damageDealt + ' (' + dmgDealtFactor + '%)' );
 //    console.log( group.name + ' involved    : ' + group.players + ' (' + playerFactor + '%)' );
     

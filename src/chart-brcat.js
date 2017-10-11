@@ -329,7 +329,7 @@ function generateKillChartData(typeOfChart)
             chartData[teamIndex+1][timeIndex]++;
           }
           else if(typeOfChart == 'dps'){
-            chartData[teamIndex+1][timeIndex]+= kill.victim.damageTaken/interval/60;
+            chartData[teamIndex+1][timeIndex]+= kill.victim.damage_taken/interval/60;
           }
           else if (typeOfChart == 'isk' || typeOfChart == 'iskTotal'){
             if(typeof  kill.zkb != 'undefined'){
@@ -375,17 +375,17 @@ function generate_pie_chart()
   _.each( gTeams, function( team, teamIdx)
   {
     var totaldamageDealt = 0;
-    var totaldamageTaken = 0;
+    var totaldamage_taken = 0;
     var totalisklost = 0;
     _.each( team, function( teamMember, teamMemberIdx)
     {
       totaldamageDealt += gGroups[teamMember].damageDealt;
-      totaldamageTaken += gGroups[teamMember].damageTaken;
+      totaldamage_taken += gGroups[teamMember].damage_taken;
       totalisklost += gGroups[teamMember].iskLost;
     } );
     chartDataIsk.push(['Team '+(teamIdx+1),totalisklost]);
     chartDataDmg.push(['Team '+(teamIdx+1),totaldamageDealt]);
-    chartDataDmgRcv.push(['Team '+(teamIdx+1),totaldamageTaken]);
+    chartDataDmgRcv.push(['Team '+(teamIdx+1),totaldamage_taken]);
   } );
 
   //chartDataIsk = convertChartDataToPercent(chartDataIsk);

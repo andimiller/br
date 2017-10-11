@@ -83,7 +83,7 @@ function buildKillTable( )
       eveImageLink( 'Character', killMail.victim.characterID ), zKillLink( 'character', killMail.victim.characterID, killMail.victim.characterName ),
       eveImageLink( 'Alliance', killMail.victim.allianceID ),   zKillLink( 'alliance', killMail.victim.allianceID, killMail.victim.allianceName ),
       //killMail.attackers.length,
-      Math.round( killMail.victim.damageTaken / 1000 ),
+      Math.round( killMail.victim.damage_taken / 1000 ),
       eveImageLink( 'Render', killMail.victim.shipTypeID ),     zKillLink( 'detail', killMail.killID, shipTypeIDtoName( killMail.victim.shipTypeID )),
       shipTypeIDtoType( killMail.victim.shipTypeID ),
       solarSystemIDtoName(killMail.solarSystemID),
@@ -370,12 +370,12 @@ function draw_class_summary_table( target )
           assert( ship.fielded >= 0 );
           assert( ship.lost >= 0 );
           assert( ship.damageDealt >= 0 );
-          assert( ship.damageTaken >= 0 );
+          assert( ship.damage_taken >= 0 );
           assert( ship.iskLost >= 0 );
           sumTableItem.fielded[ targetTeam ]  += ship.fielded;        
           sumTableItem.lost[ targetTeam ]     += ship.lost;           
           sumTableItem.dmgDealt[ targetTeam ] += ship.damageDealt;    
-          sumTableItem.dmgTaken[ targetTeam ] += ship.damageTaken;    
+          sumTableItem.dmgTaken[ targetTeam ] += ship.damage_taken;    
           sumTableItem.iskLost[ targetTeam ]  += ship.iskLost;
 
           // ignore capsules from the ship totals
@@ -386,7 +386,7 @@ function draw_class_summary_table( target )
           }
           totalItem.iskLost[ targetTeam ]     += ship.iskLost;     
           totalItem.dmgDealt[ targetTeam ]    += ship.damageDealt;     
-          totalItem.dmgTaken[ targetTeam ]    += ship.damageTaken;         
+          totalItem.dmgTaken[ targetTeam ]    += ship.damage_taken;         
         }
       } );
     } );
@@ -1120,7 +1120,7 @@ function preCalcInvolvedData(involved)
         });
         //invEntry.attackers = attackers;
         var killDetails = _.find(gData, function(kill){ return kill.killID == invEntry.killID;});
-        invEntry.damageTaken = killDetails.victim.damageTaken;
+        invEntry.damage_taken = killDetails.victim.damage_taken;
         invEntry.iskLost = killDetails.zkb.totalValue;
       }
     });
