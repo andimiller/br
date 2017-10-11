@@ -41,14 +41,9 @@ var gCoalitionData = initCoalitions( );
 var gCoalitionNames = _.sortBy( _.uniq( _.pluck( gCoalitionData, 'shortName' )), function( X ) { return X; } );
 var gFactionData = initFactions( );
 var gCharacterNames = _.memoize(function(ids) {
-  var request = new XMLHttpRequest();
-  request.open("GET", "https://esi.tech.ccp.is/v1/characters/names/?character_ids="+ids.join(","), false);
-  request.send(null);
-  if (request.status == 200) {
-    var body = JSON.parse(request.response);
+  return fetch("https://esi.tech.ccp.is/v1/characters/names/?character_ids="+ids.join(",")).then(res => res.json()).then(res => {
     return _.pluck(body, "character_name")
-  }
-  return null;
+  }).catch(e => []);
 });
 var gCharacterNameCache = _.memoize(function(id) {
   return fetch("https://esi.tech.ccp.is/v1/characters/names/?character_ids="+id).then(res => res.json()).then(res => {
