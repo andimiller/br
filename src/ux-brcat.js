@@ -23,14 +23,14 @@ function init()
   $( "#tabs" ).tabs( refresh );
 }
 
-function load_data_click( )
+async function load_data_click( )
 {
   // reset the teams specified on the load URL
   gLoadTeams = [];
-  startParsing( );
+  await startParsing( );
 }
 
-function startParsing( )
+async function startParsing( )
 {
   waitCursor( true );
   init( );
@@ -62,8 +62,8 @@ function startParsing( )
       
   updateShareLink( );
   gProcessingTime = new Date( );
-  _.each( gEntryWindowData, function( entryWindow, index )
-  {
+  for (var index in gEntryWindowData) {
+    var entryWindow = gEntryWindowData[index];
     if ( entryWindow.system.indexOf( 'http' ) >= 0 )
     {
       if(entryWindow.system.indexOf('s') == 4){
@@ -72,19 +72,20 @@ function startParsing( )
       if ( entryWindow.system.indexOf( 'related' ) >= 0 )
       {
         $( '#status' ).text( 'Reading battle from ' + entryWindow.system );
-        readEveKillUrl( index, entryWindow.system, parseEveKillRelatedKills );
+        await readEveKillUrl( index, entryWindow.system, parseEveKillRelatedKills );
       }
       else
       {
         $( '#status' ).text( 'Reading killmail from ' + entryWindow.system );
-        readEveKillUrl( index, entryWindow.system, parseEveKillIndividualMail );
+        await readEveKillUrl( index, entryWindow.system, parseEveKillIndividualMail );
       }
     }
     else
     {
-      loadEntryWindowData( entryWindow );
+      console.log("loadEntryWindowData", entryWindow);
+      await loadEntryWindowData( entryWindow );
     }
-  } );
+  }
   waitCursor( false );
 }
 

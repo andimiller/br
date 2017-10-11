@@ -1,8 +1,8 @@
-function loadEntryWindowData( entryWindow )
+async function loadEntryWindowData( entryWindow )
 {
   var systemName = entryWindow.system.toUpperCase( );
   var systemData = _.find( gSolarSystems, function ( solarsystem ) { return solarsystem.N.toUpperCase( ) == systemName; } );
-  readZkbData( 1 , createZkbDateStart( entryWindow.startTime ), createZkbDateEnd( entryWindow.endTime ), systemData, 0 );
+  await readZkbData( 1 , createZkbDateStart( entryWindow.startTime ), createZkbDateEnd( entryWindow.endTime ), systemData, 0 );
 }
 
 // /////////////////////////////////////// ZKillboard parsing ///////////////////////////////////////////
@@ -12,23 +12,7 @@ function testCallBack()
   console.log('callback');
 }
 
-var createCORSRequest = function(method, url) {
-  var xhr = new XMLHttpRequest();
-  if ("withCredentials" in xhr) {
-    // Most browsers.
-    xhr.open(method, url, true);
-  } else if (typeof XDomainRequest != "undefined") {
-    // IE8 & IE9
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-  } else {
-    // CORS not supported.
-    xhr = null;
-  }
-  return xhr;
-};
-
-function readZkbData( pageNumber, startTime, endTime, systemData , offset )
+async function readZkbData( pageNumber, startTime, endTime, systemData , offset )
 {
   var pageNumModTen = (( pageNumber - 1 ) % 10 ) + 1;
   var zKillURL = 'https://zkillboard.com/api/kills/solarSystemID/' + systemData.I + '/startTime/' + startTime + '/endTime/' + endTime +'/page/' + pageNumModTen + '/';
@@ -45,62 +29,11 @@ function readZkbData( pageNumber, startTime, endTime, systemData , offset )
   ++gTasks;
   waitCursor( true );
   
-  // new CORS code
-  var method = 'GET';
-  var xhr = createCORSRequest(method, zKillURL);
-  var corsResponse;
-
-  xhr.onload = function() {
-    // Success code goes here.
-    console.log('loaded');
-    //console.log(this.response);
-    corsResponse = JSON.parse(this.response);
-    parseZkbData( corsResponse, pageNumber, startTime, endTime, systemData );
-  };
-
-  xhr.onerror = function() {
-    // Error code goes here.
-    console.log('error');
-  };
-
   console.log("doing zkill query");
   console.log(zKillURL);
 
-  xhr.send();
-  
-  // OLD AJAX CODE
-  /*
-  $.ajax( {
-    url: zKillURL,
-    type: 'GET',
-    contentType: 'text/plain',
-    //dataType: 'json',    // tell jQuery we're expecting JSONP
-    xhrFields: {
-      // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
-      // This can be used to set the 'withCredentials' property.
-      // Set the value to 'true' if you'd like to pass cookies to the server.
-      // If this is enabled, your server must respond with the header
-      // 'Access-Control-Allow-Credentials: true'.
-      withCredentials: false
-    },
-    headers: {
-              // headers
-             },
-    //jsonpCallback: 'testCallBack',
-    //jsonp: false,
-    //data: { format: 'jsonp' },
-    cache: true,
-    success: function( response ) { parseZkbData( response, pageNumber, startTime, endTime, systemData ); },
-    error: function( jqXHR, textStatus, errorThrown )
-    {
-      $( '#status' ).text( 'Error while reading data for ' + systemData.N + ' from ' + startTime + ' to ' + endTime + ', page #' + pageNumber );
-      console.log( 'error in readZkbData: ' + textStatus +':'+ errorThrown );
-      --gTasks;
-      waitCursor( false );
-    }
-  });
-  */
-  var NowTime = new Date();
+  await fetch(zKillURL).then(res => res.json()).then(corsResponse => parseZkbData( corsResponse, pageNumber, startTime, endTime, systemData ))
+
 }
 
 async function parseZkbData( response, pageNumber, startTime, endTime, systemData )
@@ -123,24 +56,24 @@ async function parseZkbData( response, pageNumber, startTime, endTime, systemDat
       // set time of last kill we got to page through the available data
       var lastKillTime = response[ response.length - 1 ].killmail_time.replace(/:/g,'').replace(/-/g,'').replace(/ /g,'').substring(0,12);
       generateSummary( startTime, endTime, lastKillTime, true );
-      readZkbData( pageNumber + 1 , startTime, lastKillTime, systemData, 0 );
+      await readZkbData( pageNumber + 1 , startTime, lastKillTime, systemData, 0 );
     }
     else
     {
       generateSummary( startTime, endTime, lastKillTime, true );
-      readZkbData( pageNumber + 1 , startTime, endTime, systemData, 0 );
+      await readZkbData( pageNumber + 1 , startTime, endTime, systemData, 0 );
     }
   }
 
   // if length != 0, we got some results back, go ahead and push those results into our global set
-  await Promise.all(response.map(async (element) => {
+  for (var element of response) {
     if ( gData[ '' + element.killmail_id ] == undefined )
     {
       ++gDataCount;
       gData[ '' + element.killmail_id ] = element;
       await parseKillRecord( element );
     }
-  }))
+  }
 
   // if our number of tasks is 0 ( really shouldn't ever be negative ), then all the ajax requests
   // we have posted have finished, therefore we should go ahead and process the data we have collected
@@ -150,7 +83,7 @@ async function parseZkbData( response, pageNumber, startTime, endTime, systemDat
     $('#status').text( 'Compiling pilot statistics...' );
     // generate our final summary line
     generateSummary( startTime, endTime, startTime, false );
-    gData = _.sortBy( gData, function( killRecord ) { return killRecord.killTime; } );
+    gData = _.sortBy( gData, function( killRecord ) { return killRecord.killmail_time; } );
 
     var elapsed = ( new Date( )).getTime( ) - gProcessingTime.getTime( );
     console.log( 'processing time: ' + elapsed + ' ms' );
@@ -172,7 +105,7 @@ async function parseZkbData( response, pageNumber, startTime, endTime, systemDat
 
 // /////////////////////////////////////// eve-kill parsing ///////////////////////////////////////////
 
-function readEveKillUrl( index, url, callback )
+async function readEveKillUrl( index, url, callback )
 {
   // gTasks: now incrementing a global variable named gTasks whenever we issue any ajax request. AFTER
   //         our success or error handler method is called and complete, we then decrement the gTasks
@@ -180,16 +113,17 @@ function readEveKillUrl( index, url, callback )
   //         are done receiving data and should start processing the data
   ++gTasks;
   waitCursor( true );
-  $.ajax( {
-    url: url,
-    type: 'GET',
-    success: function( result )                       { callback( result, index ); --gTasks; waitCursor( false ); },
-    error: function( jqXHR, textStatus, errorThrown ) { --gTasks; waitCursor( false ); }
-  } );
+  await fetch(url).then(res => res.text()).then(async (res) => {
+    await callback({ responseText: res }, index);
+    --gTasks; waitCursor( false );
+  }).catch(e => {
+    --gTasks; waitCursor( false );
+  });
 }
 
-function parseEveKillIndividualMail( result, index )
+async function parseEveKillIndividualMail( result, index )
 {
+  console.log("parseEveKillIndividualMail");
   var $baseHtml = $( result.responseText );
   if ( $baseHtml == undefined || $baseHtml.length == 0 )
   {
@@ -211,12 +145,13 @@ function parseEveKillIndividualMail( result, index )
   gEntryWindowData[ index ].system    = system;
   uiSetDateTime( startTime, '#start', index );
   uiSetDateTime( endTime,   '#end', index );
-  loadEntryWindowData( gEntryWindowData[ index ] );
+  await loadEntryWindowData( gEntryWindowData[ index ] );
   updateEntryUIFromData( );
 }
 
-function parseEveKillRelatedKills( result, index )
+async function parseEveKillRelatedKills( result, index )
 {
+  console.log("parseEveKillRelatedKills");
   var $baseHtml = $( result.responseText );
   var entryWindow = gEntryWindowData[ index ];
 
@@ -225,7 +160,7 @@ function parseEveKillRelatedKills( result, index )
     var url = entryWindow.system.replace( 'related', 'detail' );
     url = url.replace( '&adjacent', '' );
     $( '#status' ).text( 'Reading killmail from ' + url );
-    readEveKillUrl( index, url, parseEveKillIndividualMail );
+    await readEveKillUrl( index, url, parseEveKillIndividualMail );
     return;
   }
   else
@@ -251,7 +186,7 @@ function parseEveKillRelatedKills( result, index )
   entryWindow.startTime = start;
   entryWindow.endTime   = end;
   entryWindow.system    = systems[ 0 ].trim( );
-  loadEntryWindowData( entryWindow );
+  await loadEntryWindowData( entryWindow );
 
   for( var idx = 1; idx < systems.length; ++idx )
   {
@@ -260,7 +195,7 @@ function parseEveKillRelatedKills( result, index )
     newEntryWindow.endTime   = end;
     newEntryWindow.system    = systems[ idx ].trim( );
     gEntryWindowData.push( newEntryWindow );
-    loadEntryWindowData( newEntryWindow );
+    await loadEntryWindowData( newEntryWindow );
   }
   generateEntryUIFromData( );
 }
@@ -286,7 +221,6 @@ function cleaniskData(){
 
 function build_data( )
 {
-//  _.each( gData, function( element ) { parseKillRecord( element ); } );
   
   cleaniskData();
   
@@ -384,7 +318,8 @@ async function parseKillRecord( kill )
   await updateShip( kill.victim, kill, kill.victim );
 
   // Check each attacker
-  await Promise.all(kill.attackers.map(attacker => updateShip(attacker, kill, kill.victim)));
+  for (var attacker of kill.attackers)
+    await updateShip(attacker, kill, kill.victim);
 }
 
 function handleUnknownShips()
