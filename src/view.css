@@ -1,0 +1,84 @@
+.view-classSummary {
+  border: 0;
+  width: 100%;
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0px 10px 0px 10px;
+  border:0; 
+  font-size: 1em; 
+  height: 16px; 
+  margin: 0px 0px 0px 0px; 
+}
+
+.view-listitem {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.view-involved {
+  border: 0;
+  width: 100%;
+  table-layout: fixed;
+  vertical-align: top;
+  text-align: left;
+  font-weight: normal;
+  font-size:12px;
+  list-style-type: none; 
+  border-spacing: 0px 0px;
+  padding: 0px 0px;
+  margin: 0px 0px 0px 0px; 
+}                           
+
+.view-involvedIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.view-involvedDetail {
+  border: 0;
+  width: 100%;
+  text-align: left;
+  vertical-align: top;
+  font-weight: normal;
+  font-size:12px;
+  border-spacing: 0px 0px;
+  padding: 0px 0px;
+  margin: 0px 0px 0px 0px; 
+}
+
+.view-involvedHeader {
+  text-align: center;
+  font-size:12px;
+}
+
+.view-timeline {
+  border: 0;
+  width: 100%;
+  vertical-align: top;
+  text-align: left;
+  font-weight: normal;
+  font-size:12px;
+  list-style-type: none; 
+  margin: 0; 
+  float: left;
+  border-spacing: 0px 0px;
+  padding: 0px 0px;
+  margin: 0px 0px 0px 0px; 
+}                           
+
+td.view-timelineTimeRow {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+
+td.view-divider {
+  border-top-width: 1px; 
+  border-top-style: solid; 
+  height: 1px;
+}
+
+.view-rightAlign {
+  text-align: right;
+  padding: 0px 10px;
+}

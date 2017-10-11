@@ -1,0 +1,74 @@
+html.waiting,
+html.waiting * {
+  cursor: wait !important; 
+}
+
+body {
+  font-family: 'Cuprum', sans-serif;
+  font-size: 16px;
+}
+
+.ui-tabs .ui-tabs-panel {
+  padding: .2em;
+}
+
+table.tablesorter {
+  width:100%;
+}
+
+.ui-widget-content  td, .ui-widget-content th , body.ui-widget-content{
+	border: 0;
+}
+
+table.tablesorter thead tr .header {
+  font-family: 'Cuprum', sans-serif;
+  font-size: 12px;
+  /* background-image: url(bg.gif); */
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+
+table.tablesorter thead tr .headerSortUp {
+  background-image: url(img/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+  background-image: url(img/desc.gif);
+}
+
+span.LightGray {
+  color: #d5d5d5;
+  background: #d5d5d5;
+  border: solid 1px #989898;
+}
+
+span.LightGray:hover {
+  color: #e0e0e0;
+  background: #e0e0e0;
+  border: solid 1px #989898;
+}
+
+span.LightGray:active {
+  color: #eeeeee;
+  background: #eeeeee;
+  border: solid 1px #989898;
+}
+
+span.DarkGray {
+  color: #303030;
+  background: #303030;
+  border: solid 1px #686868;
+}
+
+span.DarkGray:hover {
+  color: #3d3d3d;
+  background: #3d3d3d;
+  border: solid 1px #686868;
+}
+
+span.DarkGray:active {
+  color: #3d3d3d;
+  background: #2d2d2d;
+  border: solid 1px #686868;
+}
+

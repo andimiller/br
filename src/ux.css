@@ -1,0 +1,218 @@
+.ui-widget {
+  font-family: 'Cuprum', sans-serif;
+  font-size: 16px;
+}
+
+.ux-selTbl {
+  text-align: left;
+  vertical-align: top;
+  table-layout: fixed;
+}
+
+.ux-selTblInner {
+  width: 100%;
+  text-align: left;
+  vertical-align: top;
+  table-layout: fixed;
+  margin: 0px 0px 0px 0px; 
+  padding: 0px 0px;
+  border-spacing: 0px 0px;
+}
+
+ux-selTblHeaderRow {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  border: 0;
+}
+
+table.ux-selTblHeader {
+  border: 0;
+}
+
+table.ux-selTbl {
+  width: 100%;
+}
+
+th, td.ux-selTbl {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-collapse: collapse;
+}
+
+.ux-selTbl-TeamDetail {
+  width: 100%;
+  text-align: left;
+  vertical-align: top;
+  padding: 0em 0em 0em 0em;
+  margin: 0px 0px 0px 0px; 
+  padding: 0px 0px;
+  border-spacing: 0px 0px;
+}
+
+.ux-navPrev {
+  width: 32px;
+  margin: 0 0px;
+}
+
+.ux-navNext {
+  align: right;
+  width: 32px;
+  margin: 0 0px;
+}
+
+.ux-groupData {
+  margin: 0 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ux-button {
+  display: inline-block;
+  zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+  *display: inline;
+  vertical-align: baseline;
+  margin: 0 1px;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-family: 'Cuprum', sans-serif;
+  font-size: 14px;
+  padding: .0em .5em .1em;
+  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+  -webkit-border-radius: .5em; 
+  -moz-border-radius: .5em;
+  border-radius: .5em;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+}
+
+.ux-button:hover {
+  text-decoration: none;
+}
+
+.ux-button:active {
+  position: relative;
+  top: 1px;
+}
+
+#ux-shareLink {
+  width: 100%;
+}
+
+.ux-tooltip {
+  font: bold 12px "Helvetica Neue", Sans-Serif;
+}
+
+.ux-entry {
+  margin: 0;
+  padding: 0;
+}
+
+div.ux-entry {
+  min-width: 900px;
+}
+
+input.ux-entrySystem {
+  width: 100%;
+}
+
+.ux-offset{
+  width: 50px;
+}
+
+input.ux-entryDate {
+  max-width: 80px;
+  width: 80px;
+}
+
+input.ux-entryTime {
+  width: 40px;
+  max-width: 40px;
+}
+
+table.ux-entry {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ux-listitem {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#tabs {
+  min-height: 1px;
+  overflow: auto;
+}
+
+table td.ux-shrink {
+  white-space: nowrap;
+  padding: 0px 6px 0px 6px;
+}
+
+table td.ux-expand {
+  width: 99%;
+}
+
+.ux-summaryBox {
+  margin: 0px 6px 0px 6px; 
+  padding: 0px 6px; 
+  border: 0;
+  width: auto;
+}
+
+.ux-helpContent {
+  width: 100%; 
+  /* height: 400px;  */
+  /* background: transparent url(bkgrnd.png) left top no-repeat;  */
+  background-size: 100%; 
+  border: 0;
+  color: #DDDDDD;
+  font-size: 16px;
+}
+
+.animationbar {
+  width: 250px;
+  height: 10px;
+}
+
+.animButtons {
+  font-size: 12px !important;
+}
+
+.animIsk {
+  font-size: 16px;
+}
+
+.animAttacker {
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-bottom: 2px;
+}
+
+.animAttackerHiLight {
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-bottom: 2px;
+}
+
+.animButtons span {
+  font-size: 12px;
+}
+
+.absolute {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  /* width: 300px; */
+  /* height: 0px; */
+}
