@@ -121,7 +121,7 @@ function parseZkbData( response, pageNumber, startTime, endTime, systemData )
     if ( pageNumber % 10 == 0 )
     {
       // set time of last kill we got to page through the available data
-      var lastKillTime = response[ response.length - 1 ].killTime.replace(/:/g,'').replace(/-/g,'').replace(/ /g,'').substring(0,12);
+      var lastKillTime = response[ response.length - 1 ].killmail_time.replace(/:/g,'').replace(/-/g,'').replace(/ /g,'').substring(0,12);
       generateSummary( startTime, endTime, lastKillTime, true );
       readZkbData( pageNumber + 1 , startTime, lastKillTime, systemData, 0 );
     }
@@ -435,15 +435,15 @@ function parseGroupData( killdata )
   var NowTimeEnd = new Date();
 }
 
-function updateShip( player, kill, victim )
+async function updateShip( player, kill, victim )
 {
-  var playerIndex = checkPlayerExists( player );
+  var playerIndex = await checkPlayerExists( player );
   var shipIndex = checkShipExists( player, playerIndex );
   var newKill = new Object;
   newKill.killmail_id = kill.killmail_id;
   newKill.time = kill.killmail_time;
   assert( victim != undefined );
-  newKill.player = gPlayers[ checkPlayerExists( victim ) ];
+  newKill.player = gPlayers[ await checkPlayerExists( victim ) ];
   newKill.victim = ( player.character_id == victim.character_id );
   newKill.iskLost = 0;
   newKill.ship_type_id = player.ship_type_id;
@@ -474,7 +474,7 @@ function updateShip( player, kill, victim )
 
 // Player Functions
   
-function checkPlayerExists( player )
+async function checkPlayerExists( player )
 {
   assert( player.characterName != DEBUG_PLAYER );
   // this method is more complex than it needs to be due to bugs in the eve killmails themselves.
@@ -515,22 +515,22 @@ function checkPlayerExists( player )
     // player names are not equal, definitely not the same player entity
     return false;
   } );
-  return foundPlayer != undefined ? foundPlayer.index : addplayer( player );
+  return foundPlayer != undefined ? foundPlayer.index : await addplayer( player );
 }
 
-function addplayer( player )
+async function addplayer( player )
 {
   assert( player.characterName != DEBUG_PLAYER );
   var newplayer = new Object;
   newplayer.alliance_id       = player.alliance_id;
-  newplayer.allianceName     = gAllianceNameCache(player.alliance_id);
+  newplayer.allianceName     = await gAllianceNameCache(player.alliance_id);
   newplayer.corporation_id    = player.corporation_id;
-  newplayer.corporationName  = gCorporationNameCache(player.corporation_id);
+  newplayer.corporationName  = await gCorporationNameCache(player.corporation_id);
   newplayer.factionID        = player.faction_id;
   newplayer.factionName      = player.faction_id;
   newplayer.id               = player.character_id;
   newplayer.character_id     = player.character_id;
-  newplayer.name             = gCharacterNameCache(player.character_id); //player.character_id; // Name;
+  newplayer.name             = await gCharacterNameCache(player.character_id); //player.character_id; // Name;
   newplayer.ships            = [];
   newplayer.index            = gPlayers.length;
   newplayer.damageDealt      = 0;
