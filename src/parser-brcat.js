@@ -310,6 +310,11 @@ async function parseKillRecord( kill )
     }
   }
 
+  // augment with names
+  var characters = _.filter([kill.victim].concat(kill.attackers), function (e) { return typeof e.character_id == "number" });
+  var names = gCharacterNames(_.pluck(characters, "character_id"));
+  _.each(_.zip(characters, names), function (kv) { kv[0].name = kv[1] });
+
   // Process victim
   if ( kill.victim.ship_type_id == 32250 )
   {
@@ -460,7 +465,7 @@ async function addplayer( player )
   newplayer.factionName      = player.faction_id;
   newplayer.id               = player.character_id;
   newplayer.character_id     = player.character_id;
-  newplayer.name             = await gCharacterNameCache(player.character_id); //player.character_id; // Name;
+  newplayer.name             = player.name; //gCharacterNameCache(player.character_id); //player.character_id; // Name;
   newplayer.ships            = [];
   newplayer.index            = gPlayers.length;
   newplayer.damageDealt      = 0;
