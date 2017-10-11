@@ -469,7 +469,7 @@ function updateShip( player, kill, victim )
   }
   else
   {
-    newKill.damage = Number(player.damageDone);
+    newKill.damage = Number(player.damage_done);
     newKill.final_blow = player.final_blow;
     newKill.weaponTypeID = player.weaponID;
   }
