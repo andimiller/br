@@ -68,10 +68,10 @@ function buildKillTable( )
 
   _.each( gData, function( killMail, killMailIdx )
   {
-    var groupID = killMail.victim.allianceID;
+    var groupID = killMail.victim.alliance_id;
     if( groupID == 0)
     {
-      groupID = killMail.victim.corporationID;
+      groupID = killMail.victim.corporation_id;
     }
     var isk = '?';
     if( killMail.zkb != undefined )
@@ -80,15 +80,15 @@ function buildKillTable( )
     }
     var row = [
       //killMailIdx,
-      eveImageLink( 'Character', killMail.victim.characterID ), zKillLink( 'character', killMail.victim.characterID, killMail.victim.characterName ),
-      eveImageLink( 'Alliance', killMail.victim.allianceID ),   zKillLink( 'alliance', killMail.victim.allianceID, killMail.victim.allianceName ),
+      eveImageLink( 'Character', killMail.victim.character_id ), zKillLink( 'character', killMail.victim.character_id, killMail.victim.characterName ),
+      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, killMail.victim.allianceName ),
       //killMail.attackers.length,
       Math.round( killMail.victim.damage_taken / 1000 ),
-      eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killID, ship_type_idtoName( killMail.victim.ship_type_id )),
+      eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killmail_id, ship_type_idtoName( killMail.victim.ship_type_id )),
       ship_type_idtoType( killMail.victim.ship_type_id ),
       solarSystemIDtoName(killMail.solarSystemID),
       killMail.killTime.split( ' ' )[ 1 ].slice(0,-3),
-      //killMail.killID,
+      //killMail.killmail_id,
       isk
     ];
     if( getTeam( groupID ) > -1 )
@@ -472,8 +472,8 @@ function initInvolvedEntry( player )
   var invEntry = new Object;
   invEntry.allianceName = player.allianceName;
   invEntry.corporationName = player.corporationName;
-  invEntry.corporationID = player.corporationID;
-  invEntry.allianceID = player.allianceID;
+  invEntry.corporation_id = player.corporation_id;
+  invEntry.alliance_id = player.alliance_id;
   invEntry.playerName = player.name;
   invEntry.playerID = player.id;
   invEntry.victim = false;
@@ -507,7 +507,7 @@ function buildInvolved()
         _.each( player.ships, function( ship, shipIdx )
         {
           var invEntry = initInvolvedEntry( player );
-//          invEntry.kills = ship.kills.length;
+          invEntry.kills = ship.kills.length;
           teamLosses[ player.group.team ] += ship.lost;
           var temp = _.find( gShipTypes, function( X ) { return X.I == ship.ship_type_id; } );
           if ( temp != undefined )
@@ -520,7 +520,7 @@ function buildInvolved()
             if ( kill.victim )
             {
               invEntry.victim = true;
-              invEntry.killID = kill.killID;
+              invEntry.killmail_id = kill.killmail_id;
               invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == invEntry.shipID; } );
               if ( invEntry.shipData == undefined )
               {
@@ -571,7 +571,7 @@ function buildInvolved()
       {
         if ( invEntry.victim && isCapsule( invEntry.shipID ) && prevEntry != undefined )
         {
-          prevEntry.podKillID = invEntry.killID;
+          prevEntry.podKillID = invEntry.killmail_id;
         }
         else
         {
@@ -707,9 +707,9 @@ function  setRIDtext(teamIDX,invIndex)
   $('#RIDship').empty();
   $('#RIDship').append(target.shipData.N);
   $('#RIDcorp').empty();
-  $('#RIDcorp').append('<img src="https://image.eveonline.com/Corporation/'+target.corporationID+'_32.png" style="width: 16px;">'+target.corporationName);
+  $('#RIDcorp').append('<img src="https://image.eveonline.com/Corporation/'+target.corporation_id+'_32.png" style="width: 16px;">'+target.corporationName);
   $('#RIDalliance').empty();
-  $('#RIDalliance').append('<img src="https://image.eveonline.com/Alliance/'+target.allianceID+'_32.png" style="width: 16px;">'+target.allianceName);
+  $('#RIDalliance').append('<img src="https://image.eveonline.com/Alliance/'+target.alliance_id+'_32.png" style="width: 16px;">'+target.allianceName);
   $('#RIDclass').empty();
   $('#RIDclass').append(target.shipData.G);
   $('#RIDkills').empty();
@@ -852,23 +852,23 @@ function offsetInputChange()
   refresh( );
 }
 
-// Returns array of attackers for given killID
-function getAttackers(killID)
+// Returns array of attackers for given killmail_id
+function getAttackers(killmail_id)
 {
   var attackers = [];
-  var thisKill = _.find(gData, function(kill){return kill.killID ==killID});
+  var thisKill = _.find(gData, function(kill){return kill.killmail_id ==killmail_id});
   _.each(thisKill.attackers, function(attacker){
-    attackers.push(attacker.characterID);
+    attackers.push(attacker.character_id);
   });
   return attackers;
 }
 
-function getAttackersAndShip(killID)
+function getAttackersAndShip(killmail_id)
 {
   var attackers = [];
-  var thisKill = _.find(gData, function(kill){return kill.killID ==killID});
+  var thisKill = _.find(gData, function(kill){return kill.killmail_id ==killmail_id});
   _.each(thisKill.attackers, function(attacker){
-    attackers.push([attacker.characterID, attacker.ship_type_id]);
+    attackers.push([attacker.character_id, attacker.ship_type_id]);
   });
   return attackers;
 }
@@ -1114,12 +1114,12 @@ function preCalcInvolvedData(involved)
   _.each(newInvolved, function(team, teamIDX){
     _.each(team, function(invEntry, invIndex){
       if(invEntry.victim){
-        var attackers = getAttackersAndShip(invEntry.killID, teamIDX, invIndex);
+        var attackers = getAttackersAndShip(invEntry.killmail_id, teamIDX, invIndex);
         _.each(attackers, function(attacker, attackerIndex){
-          involved = markAttacker(attacker[CHARACTER_ID], attacker[SHIP_ID], involved, invEntry.time, invEntry.killID, teamIDX,invIndex); 
+          involved = markAttacker(attacker[CHARACTER_ID], attacker[SHIP_ID], involved, invEntry.time, invEntry.killmail_id, teamIDX,invIndex); 
         });
         //invEntry.attackers = attackers;
-        var killDetails = _.find(gData, function(kill){ return kill.killID == invEntry.killID;});
+        var killDetails = _.find(gData, function(kill){ return kill.killmail_id == invEntry.killmail_id;});
         invEntry.damage_taken = killDetails.victim.damage_taken;
         invEntry.iskLost = killDetails.zkb.totalValue;
       }
@@ -1128,7 +1128,7 @@ function preCalcInvolvedData(involved)
   return newInvolved;
 }
 
-function markAttacker(playerID, shipID, involved, killTime, killID,tIDX,iIndex)
+function markAttacker(playerID, shipID, involved, killTime, killmail_id,tIDX,iIndex)
 {
   var marked = false;
   _.each(involved, function(team, teamIDX){
@@ -1149,7 +1149,7 @@ function markAttacker(playerID, shipID, involved, killTime, killID,tIDX,iIndex)
             if(team[invEntry.index].aggressor == undefined){
               team[invEntry.index].aggressor = [];
             }
-            team[invEntry.index].aggressor.push([killTime,killID,tIDX,iIndex]);
+            team[invEntry.index].aggressor.push([killTime,killmail_id,tIDX,iIndex]);
             if(involved[tIDX][iIndex].attackers == undefined){
               involved[tIDX][iIndex].attackers = [];
             }          
@@ -1162,7 +1162,7 @@ function markAttacker(playerID, shipID, involved, killTime, killID,tIDX,iIndex)
         if(team[matches[0].index].aggressor == undefined){
           team[matches[0].index].aggressor = [];
         }
-        team[matches[0].index].aggressor.push([killTime,killID,tIDX,iIndex]);
+        team[matches[0].index].aggressor.push([killTime,killmail_id,tIDX,iIndex]);
         if(involved[tIDX][iIndex].attackers == undefined){
           involved[tIDX][iIndex].attackers = [];
         }          
@@ -1174,7 +1174,7 @@ function markAttacker(playerID, shipID, involved, killTime, killID,tIDX,iIndex)
           if(invEntry.aggressor == undefined){
             invEntry.aggressor = [];
           }
-          invEntry.aggressor.push([killTime,killID,tIDX,iIndex]);
+          invEntry.aggressor.push([killTime,killmail_id,tIDX,iIndex]);
           if(involved[tIDX][iIndex].attackers == undefined){
             involved[tIDX][iIndex].attackers = [];
           }          
@@ -1600,10 +1600,10 @@ function generateKillMailCell( cellClass, invEntry, nonTeamLosses )
   var imageLink      = eveImageLink( 'Render', invEntry.shipData.I );
   var leftUpperCell  = zKillLink( 'character', invEntry.playerID, invEntry.playerName ) + ' ' + ( invEntry.podKillID == 0 ? '' : zKillLink( 'detail', invEntry.podKillID, '[Pod]' ));
   var leftLowerCell  = invEntry.shipData.N;
-  var rightUpperCell = zKillLink( 'corporation', invEntry.corporationID, invEntry.corporationName );
-  var rightLowerCell = zKillLink( 'alliance', invEntry.allianceID, invEntry.allianceName );
+  var rightUpperCell = zKillLink( 'corporation', invEntry.corporation_id, invEntry.corporationName );
+  var rightLowerCell = zKillLink( 'alliance', invEntry.alliance_id, invEntry.allianceName );
 
-  var cellData   = TableData( 'view-involvedIcon ' + cellClass, invEntry.victim ? zKillLink( 'kill', invEntry.killID, imageLink ) : imageLink );
+  var cellData   = TableData( 'view-involvedIcon ' + cellClass, invEntry.victim ? zKillLink( 'kill', invEntry.killmail_id, imageLink ) : imageLink );
   cellData      += TableData( 'teamText ' + cellClass, Bold( leftUpperCell )  + '<br>' + leftLowerCell );
   if ( nonTeamLosses != undefined )
   {
@@ -1653,7 +1653,7 @@ function generateBattleTimeline( target )
     var timeHeader = event[ 0 ].killTime.split( ' ' )[ 1 ].slice( 0, - 3 );
     var timeTitle = timeHeader;
     var timeRowClass = 'view-timelineTimeRow';
-    var dataByTeam = _.groupBy( event, function( entry ) { return getTeam( entry.victim.allianceID == 0 ? entry.victim.corporationID : entry.victim.allianceID ); } );
+    var dataByTeam = _.groupBy( event, function( entry ) { return getTeam( entry.victim.alliance_id == 0 ? entry.victim.corporation_id : entry.victim.alliance_id ); } );
     var index = 0;
     var found = true;
     while( found )
@@ -1672,8 +1672,8 @@ function generateBattleTimeline( target )
           found = true;
           var invEntry = initInvolvedEntry( data.victim );
           invEntry.playerName = data.victim.characterName;
-          invEntry.playerID = data.victim.characterID;
-          invEntry.killID = data.killID;
+          invEntry.playerID = data.victim.character_id;
+          invEntry.killmail_id = data.killmail_id;
           invEntry.victim = true;
           invEntry.podKillID = 0;
           invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == data.victim.ship_type_id; } );
@@ -1783,7 +1783,7 @@ function oldFunction()
       // if this ship icon is a victim
       if(invEntry.victim){
         // find the kill in gData
-        var killDetails = _.find(gData, function(kill){ return kill.killID == invEntry.killID;});
+        var killDetails = _.find(gData, function(kill){ return kill.killmail_id == invEntry.killmail_id;});
         // if thistime is before or equal to offset time
         if (thisTime <= offsetTime){
            // add isk lost to iskLost total

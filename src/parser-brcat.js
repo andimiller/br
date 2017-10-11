@@ -135,10 +135,10 @@ function parseZkbData( response, pageNumber, startTime, endTime, systemData )
   // if length != 0, we got some results back, go ahead and push those results into our global set
   _.each( response, function( element )
   {
-    if ( gData[ '' + element.killID ] == undefined )
+    if ( gData[ '' + element.killmail_id ] == undefined )
     {
       ++gDataCount;
-      gData[ '' + element.killID ] = element;
+      gData[ '' + element.killmail_id ] = element;
       parseKillRecord( element );
     }
   } );
@@ -352,7 +352,7 @@ function build_data( )
     {
       _.each( gGroups, function( group )
       {
-        if( group.ID == killmail.victim.allianceID )
+        if( group.ID == killmail.victim.alliance_id )
         {
           if(!isNaN(parseInt(killmail.zkb.totalValue,10))){
             group.iskLost += parseInt(killmail.zkb.totalValue,10);
@@ -440,11 +440,11 @@ function updateShip( player, kill, victim )
   var playerIndex = checkPlayerExists( player );
   var shipIndex = checkShipExists( player, playerIndex );
   var newKill = new Object;
-  newKill.killID = kill.killmail_id;
+  newKill.killmail_id = kill.killmail_id;
   newKill.time = kill.killmail_time;
   assert( victim != undefined );
   newKill.player = gPlayers[ checkPlayerExists( victim ) ];
-  newKill.victim = ( player.characterID == victim.characterID );
+  newKill.victim = ( player.character_id == victim.character_id );
   newKill.iskLost = 0;
   newKill.ship_type_id = player.ship_type_id;
   if ( newKill.victim )
@@ -478,33 +478,33 @@ function checkPlayerExists( player )
 {
   assert( player.characterName != DEBUG_PLAYER );
   // this method is more complex than it needs to be due to bugs in the eve killmails themselves.
-  // since these mails sometimes just decide to omit the corporation and corporationID from the data,
+  // since these mails sometimes just decide to omit the corporation and corporation_id from the data,
   // we use some logic to determine if player record being checked is actually already in the global
   // list or not
   var foundPlayer = _.find( gPlayers, function( testPlayer, index )
   {
     // if the player names are equal, either the corp ID or the alliance ID needs to match
     // as well, since for structures the player name is an empty string
-    if ( player.characterName == testPlayer.name )
+    if ( player.character_id == testPlayer.character_id )
     {
       // player names are equal, compare the alliance IDs
-      var equal = ( player.allianceID == testPlayer.allianceID );
+      var equal = ( player.alliance_id == testPlayer.alliance_id );
       // since the corp ID can get left out, check to see if the player we are checking
       // has a corpID
-      if ( player.corporationID != 0 )
+      if ( player.corporation_id != 0 )
       {
-        if ( testPlayer.corporationID != 0 )
+        if ( testPlayer.corporation_id != 0 )
         {
           // both the player being checked and the player in the list have a corpID,
           // return the results of the corpID comparison
-          return player.corporationID == testPlayer.corporationID;
+          return player.corporation_id == testPlayer.corporation_id;
         }
         // since the corpID of the entry in the list is not set we check to see if the alliance IDs
         // are equal and if so, we overwrite the empty corp information in the list's player entry
         // with those of the player being checked and fall through to returning that they are equal
         if ( equal )
         {
-          testPlayer.corporationID   = player.corporationID;
+          testPlayer.corporation_id   = player.corporation_id;
           testPlayer.corporationName = player.corporationName;
         }
       }
@@ -522,13 +522,14 @@ function addplayer( player )
 {
   assert( player.characterName != DEBUG_PLAYER );
   var newplayer = new Object;
-  newplayer.allianceID       = player.alliance_id;
+  newplayer.alliance_id       = player.alliance_id;
   newplayer.allianceName     = gAllianceNameCache(player.alliance_id);
-  newplayer.corporationID    = player.corporation_id;
+  newplayer.corporation_id    = player.corporation_id;
   newplayer.corporationName  = gCorporationNameCache(player.corporation_id);
   newplayer.factionID        = player.faction_id;
   newplayer.factionName      = player.faction_id;
   newplayer.id               = player.character_id;
+  newplayer.character_id     = player.character_id;
   newplayer.name             = gCharacterNameCache(player.character_id); //player.character_id; // Name;
   newplayer.ships            = [];
   newplayer.index            = gPlayers.length;
@@ -569,13 +570,13 @@ function addship( player, playerIndex )
 
 function checkGroupExists( player )
 {
-  if( player.allianceID != 0 )
+  if( player.alliance_id != 0 )
   {
-    groupID = player.allianceID;
+    groupID = player.alliance_id;
   }
   else
   {
-    groupID = player.corporationID;
+    groupID = player.corporation_id;
   }
   var foundGroup = _.find( gGroups, function( testGroup ) { return groupID == testGroup.ID } );
   if( foundGroup != undefined )
@@ -589,14 +590,14 @@ function checkGroupExists( player )
 function addGroup( player )
 {
   var newGroup = new Object;
-  if(player.allianceID != 0)
+  if(player.alliance_id != 0)
   {
-    newGroup.ID = player.allianceID;
+    newGroup.ID = player.alliance_id;
     newGroup.name = player.allianceName;
   }
   else
   {
-    newGroup.ID = player.corporationID;
+    newGroup.ID = player.corporation_id;
     newGroup.name = player.corporationName;
   }
   newGroup.factionID   = player.factionID;

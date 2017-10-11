@@ -288,7 +288,7 @@ function generateKillChartData(typeOfChart)
       _.each(player.ships, function(ship){
         // Get the players first kill or loss time
         var kill = ship.kills[ship.kills.length-1];
-        var fullKill = _.find(gData, function(killmail){ return kill.killID == killmail.killID });
+        var fullKill = _.find(gData, function(killmail){ return kill.killmail_id == killmail.killmail_id });
         var killTime = convertToTime(fullKill.killTime);
         var timeIndex = Math.floor((killTime.getTime()-firstKill.getTime())/ MS_PER_MINUTE / interval);
         if(firstTimeIndex == -1){
@@ -299,7 +299,7 @@ function generateKillChartData(typeOfChart)
         }
 
       });
-      var teamIndex = getTeam(player.allianceID ? player.allianceID : player.corporationID );
+      var teamIndex = getTeam(player.alliance_id ? player.alliance_id : player.corporation_id );
       if(teamIndex > -1){
         chartData[teamIndex+1][firstTimeIndex]++;
       }
@@ -323,7 +323,7 @@ function generateKillChartData(typeOfChart)
       {
         var killTime = convertToTime(kill.killTime);
         var timeIndex = Math.floor((killTime.getTime()-firstKill.getTime())/ MS_PER_MINUTE / interval);
-        var teamIndex = getTeam(kill.victim.allianceID ? kill.victim.allianceID : kill.victim.corporationID );
+        var teamIndex = getTeam(kill.victim.alliance_id ? kill.victim.alliance_id : kill.victim.corporation_id );
         if(teamIndex > -1){
           if(typeOfChart == 'kill' || typeOfChart == 'killTotal'){
             chartData[teamIndex+1][timeIndex]++;
@@ -338,7 +338,7 @@ function generateKillChartData(typeOfChart)
           }
           else if(typeOfChart == 'dpsDone'){
             _.each(kill.attackers, function(attacker){
-              var attackerTeamIndex = getTeam(attacker.allianceID ? attacker.allianceID : attacker.corporationID );
+              var attackerTeamIndex = getTeam(attacker.alliance_id ? attacker.alliance_id : attacker.corporation_id );
               if(attackerTeamIndex > -1){
                 chartData[attackerTeamIndex+1][timeIndex]+= Number(attacker.damageDone/interval/60);
               }
