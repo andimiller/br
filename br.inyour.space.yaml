@@ -25,7 +25,7 @@ spec:
         app: br
     spec:
       containers:
-      - name: br-static
+      - name: br
         image: andimiller/br
         ports:
         - containerPort: 80
