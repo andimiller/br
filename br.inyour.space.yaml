@@ -1,0 +1,80 @@
+---
+#
+# Static website
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: br
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: br
+  type: NodePort
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: br
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: br
+    spec:
+      containers:
+      - name: br-static
+        image: andimiller/br
+        ports:
+        - containerPort: 80
+          protocol: "TCP"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+---
+#
+# Routing
+#
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: br-tls
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - br.inyour.space
+    secretName: br-tls
+  rules:
+  - host: br.inyour.space
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: br
+          servicePort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: br
+  annotations:
+    # kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: br.inyour.space
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: br
+          servicePort: 80
