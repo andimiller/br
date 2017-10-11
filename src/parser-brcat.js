@@ -103,7 +103,7 @@ function readZkbData( pageNumber, startTime, endTime, systemData , offset )
   var NowTime = new Date();
 }
 
-function parseZkbData( response, pageNumber, startTime, endTime, systemData )
+async function parseZkbData( response, pageNumber, startTime, endTime, systemData )
 {
   //console.log(response);
   // must set status BEFORE posting any additional ajax requests
@@ -133,15 +133,14 @@ function parseZkbData( response, pageNumber, startTime, endTime, systemData )
   }
 
   // if length != 0, we got some results back, go ahead and push those results into our global set
-  _.each( response, function( element )
-  {
+  await Promise.all(response.map(async (element) => {
     if ( gData[ '' + element.killmail_id ] == undefined )
     {
       ++gDataCount;
       gData[ '' + element.killmail_id ] = element;
-      parseKillRecord( element );
+      await parseKillRecord( element );
     }
-  } );
+  }))
 
   // if our number of tasks is 0 ( really shouldn't ever be negative ), then all the ajax requests
   // we have posted have finished, therefore we should go ahead and process the data we have collected
@@ -363,7 +362,7 @@ function build_data( )
   } );
 }
 
-function parseKillRecord( kill )
+async function parseKillRecord( kill )
 {
   // Check each kill
   assert( kill != undefined );
@@ -382,14 +381,10 @@ function parseKillRecord( kill )
   {
     var foo = 0;
   }
-  updateShip( kill.victim, kill, kill.victim );
+  await updateShip( kill.victim, kill, kill.victim );
 
   // Check each attacker
-  _.each( kill.attackers ,function( attacker )
-  {
-    // Process each attacker
-    updateShip( attacker, kill, kill.victim );
-  } );
+  await Promise.all(kill.attackers.map(attacker => updateShip(attacker, kill, kill.victim)));
 }
 
 function handleUnknownShips()
