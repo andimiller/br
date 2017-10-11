@@ -340,7 +340,7 @@ function generateKillChartData(typeOfChart)
             _.each(kill.attackers, function(attacker){
               var attackerTeamIndex = getTeam(attacker.alliance_id ? attacker.alliance_id : attacker.corporation_id );
               if(attackerTeamIndex > -1){
-                chartData[attackerTeamIndex+1][timeIndex]+= Number(attacker.damageDone/interval/60);
+                chartData[attackerTeamIndex+1][timeIndex]+= Number(attacker.damage_done/interval/60);
               }
             });
           }
