@@ -374,17 +374,17 @@ function generate_pie_chart()
 
   _.each( gTeams, function( team, teamIdx)
   {
-    var totaldamageDealt = 0;
+    var totaldamage_dealt = 0;
     var totaldamage_taken = 0;
     var totalisklost = 0;
     _.each( team, function( teamMember, teamMemberIdx)
     {
-      totaldamageDealt += gGroups[teamMember].damageDealt;
+      totaldamage_dealt += gGroups[teamMember].damage_dealt;
       totaldamage_taken += gGroups[teamMember].damage_taken;
       totalisklost += gGroups[teamMember].iskLost;
     } );
     chartDataIsk.push(['Team '+(teamIdx+1),totalisklost]);
-    chartDataDmg.push(['Team '+(teamIdx+1),totaldamageDealt]);
+    chartDataDmg.push(['Team '+(teamIdx+1),totaldamage_dealt]);
     chartDataDmgRcv.push(['Team '+(teamIdx+1),totaldamage_taken]);
   } );
 

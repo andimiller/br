@@ -62,30 +62,34 @@ async function startParsing( )
       
   updateShareLink( );
   gProcessingTime = new Date( );
-  await Promise.all(gEntryWindowData.map(async ( entryWindow, index ) =>
-  {
-    if ( entryWindow.system.indexOf( 'http' ) >= 0 )
+
+  const killmails = [].concat(...await Promise.all(gEntryWindowData.map(entryWindow => loadEntryWindowData(entryWindow))));
+
+  const { characterIDs, corporationIDs, allianceIDs } = [].concat(...killmails.map(({ victim, attackers }) => [victim].concat(attackers))).reduce((p, { character_id, corporation_id, alliance_id }) => {
+    if (character_id)
+      p.characterIDs.add(character_id);
+    if (corporation_id)
+      p.corporationIDs.add(corporation_id);
+    if (alliance_id)
+      p.allianceIDs.add(alliance_id);
+    return p;
+  }, { characterIDs: new Set(), corporationIDs: new Set(), allianceIDs: new Set() });
+
+  const idToName = new Map([
+    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/characters/names/?character_ids=", Array.from(characterIDs), 100), "character_id", "character_name"), 
+    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/corporations/names/?corporation_ids=", Array.from(corporationIDs), 100), "corporation_id", "corporation_name"), 
+    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids=", Array.from(allianceIDs), 100), "alliance_id", "alliance_name")
+  ]);
+
+  // if length != 0, we got some results back, go ahead and push those results into our global set
+  for (var element of killmails) {
+    if ( gData[ '' + element.killmail_id ] == undefined )
     {
-      if(entryWindow.system.indexOf('s') == 4){
-        entryWindow.system = 'http' + entryWindow.system.substr(5);
-      }
-      if ( entryWindow.system.indexOf( 'related' ) >= 0 )
-      {
-        $( '#status' ).text( 'Reading battle from ' + entryWindow.system );
-        await readEveKillUrl( index, entryWindow.system, parseEveKillRelatedKills );
-      }
-      else
-      {
-        $( '#status' ).text( 'Reading killmail from ' + entryWindow.system );
-        await readEveKillUrl( index, entryWindow.system, parseEveKillIndividualMail );
-      }
+      ++gDataCount;
+      gData[ '' + element.killmail_id ] = element;
+      parseKillRecord( element, idToName );
     }
-    else
-    {
-      console.log("loadEntryWindowData", entryWindow);
-      await loadEntryWindowData( entryWindow );
-    }
-  } ));
+  }
 
   gData = Object.values(gData);
 
