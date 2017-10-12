@@ -87,6 +87,8 @@ async function startParsing( )
     }
   } ));
 
+  gData = Object.values(gData);
+
   // if our number of tasks is 0 ( really shouldn't ever be negative ), then all the ajax requests
   // we have posted have finished, therefore we should go ahead and process the data we have collected
   // and present the user the team selection UI
