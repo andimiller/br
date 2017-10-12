@@ -65,13 +65,16 @@ async function parseZkbData( response, pageNumber, startTime, endTime, systemDat
     }
   }
 
+  var ids = Array.from(new Set(_.flatten(response.map(kill => [kill.victim].concat(kill.attackers).map(entity => [entity.character_id, entity.corporation_id, entity.alliance_id]))).filter(x => !!x)));
+  var entities = await gEntityNames(ids);
+
   // if length != 0, we got some results back, go ahead and push those results into our global set
   for (var element of response) {
     if ( gData[ '' + element.killmail_id ] == undefined )
     {
       ++gDataCount;
       gData[ '' + element.killmail_id ] = element;
-      await parseKillRecord( element );
+      await parseKillRecord( element, entities );
     }
   }
 
@@ -304,7 +307,7 @@ function createGroupedArray(arr, chunkSize) {
     return groups;
 }
 
-async function parseKillRecord( kill )
+async function parseKillRecord( kill, entities )
 {
   // Check each kill
   assert( kill != undefined );
@@ -318,11 +321,14 @@ async function parseKillRecord( kill )
     }
   }
 
-  // augment with names
-  var characters = _.filter([kill.victim].concat(kill.attackers), function (e) { return typeof e.character_id == "number" });
-  var chunkedCharacters = createGroupedArray(characters, 250);
-  var names = _.flatten(await Promise.all(chunkedCharacters.map(cs => gCharacterNames(_.pluck(cs, "character_id" )))));
-  _.each(_.zip(characters, names), function (kv) { kv[0].name = kv[1] });
+  [kill.victim].concat(kill.attackers).forEach(character => {
+    if (character.character_id)
+      character.name = entities.characters[character.character_id];
+    if (character.corporation_id)
+      character.corporation_name = entities.corporations[character.corporation_id];
+    if (character.alliance_id)
+      character.alliance_name = entities.alliances[character.alliance_id];
+  });
 
   // Process victim
   if ( kill.victim.ship_type_id == 32250 )
@@ -467,9 +473,11 @@ async function addplayer( player )
   assert( player.characterName != DEBUG_PLAYER );
   var newplayer = new Object;
   newplayer.alliance_id       = player.alliance_id;
-  newplayer.allianceName     = await gAllianceNameCache(player.alliance_id);
+  //newplayer.allianceName     = await gAllianceNameCache(player.alliance_id);
+  newplayer.allianceName     = player.alliance_name;
   newplayer.corporation_id    = player.corporation_id;
-  newplayer.corporationName  = await gCorporationNameCache(player.corporation_id);
+  //newplayer.corporationName  = await gCorporationNameCache(player.corporation_id);
+  newplayer.corporationName  = player.corporation_name;
   newplayer.factionID        = player.faction_id;
   newplayer.factionName      = player.faction_id;
   newplayer.id               = player.character_id;
