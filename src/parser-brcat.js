@@ -320,8 +320,8 @@ async function parseKillRecord( kill )
 
   // augment with names
   var characters = _.filter([kill.victim].concat(kill.attackers), function (e) { return typeof e.character_id == "number" });
-  var chunkedCharacters = createGroupedArray(characters, 250); 
-  var names = _.flatten(_.map(chunkedCharacters, function(cs) { return gCharacterNames(_.pluck(cs, "character_id" )) }));
+  var splitcharacters = createGroupedArray(characters, 250); 
+  var names = _.flatten(_.map(splitcharacters, function(cs) { return gCharacterNames(_.pluck(cs, "character_id" )) }));
   _.each(_.zip(characters, names), function (kv) { kv[0].name = kv[1] });
 
   // Process victim
