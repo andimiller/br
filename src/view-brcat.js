@@ -86,8 +86,8 @@ function buildKillTable( )
       Math.round( killMail.victim.damage_taken / 1000 ),
       eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killmail_id, ship_type_idtoName( killMail.victim.ship_type_id )),
       ship_type_idtoType( killMail.victim.ship_type_id ),
-      solarSystemIDtoName(killMail.solarSystemID),
-      killMail.killTime.split( ' ' )[ 1 ].slice(0,-3),
+      solarSystemIDtoName(killMail.solar_system_id),
+      killMail.killmail_time.split( 'T' )[ 1 ].slice(0,-3),
       //killMail.killmail_id,
       isk
     ];
@@ -1608,11 +1608,11 @@ function generateBattleTimeline( target )
   {
       // sort predicate:  if the killtimes are equal then put the pod after the
       //                  ship in the kill list
-    if ( lhs.killTime == rhs.killTime )
+    if ( lhs.killmail_time == rhs.killmail_time )
     {
       return isCapsule( lhs.victim.ship_type_id ) - isCapsule( rhs.victim.ship_type_id );
     }
-    return lhs.killTime > rhs.killTime ? 1 : -1;
+    return lhs.killmail_time > rhs.killmail_time ? 1 : -1;
   } );
 
   var html = [];
@@ -1620,7 +1620,7 @@ function generateBattleTimeline( target )
   var lastTime = '';
   var blockHtml = '';
   var oddRow = true;
-  var dataByTime = _.groupBy( gData, 'killTime' );
+  var dataByTime = _.groupBy( gData, 'killmail_time' );
   for( var teamIdx = 0; teamIdx < gTeams.length; ++teamIdx )
   {
     html.push( '<th colspan=2 align="center">Pilot/Ship</th><th align="center">Alliance/Corp</th>' );
@@ -1629,9 +1629,9 @@ function generateBattleTimeline( target )
   _.each( dataByTime, function( event )
   {
     assert( event[ 0 ] != undefined );
-    assert( event[ 0 ].killTime != undefined );
-    // extract time portion of the killTime and remove the seconds portion
-    var timeHeader = event[ 0 ].killTime.split( ' ' )[ 1 ].slice( 0, - 3 );
+    assert( event[ 0 ].killmail_time != undefined );
+    // extract time portion of the killmail_time and remove the seconds portion
+    var timeHeader = event[ 0 ].killmail_time.split( 'T' )[ 1 ].slice( 0, - 3 );
     var timeTitle = timeHeader;
     var timeRowClass = 'view-timelineTimeRow';
     var dataByTeam = _.groupBy( event, function( entry ) { return getTeam( entry.victim.alliance_id == 0 ? entry.victim.corporation_id : entry.victim.alliance_id ); } );

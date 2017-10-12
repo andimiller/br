@@ -245,8 +245,8 @@ function generateKillChartData(typeOfChart)
   {
     return chartData;
   }
-  var lastKill = convertToTime( gData[gData.length-1].killTime );
-  var firstKill = convertToTime( gData[0].killTime);
+  var lastKill = convertToTime( gData[gData.length-1].killmail_time );
+  var firstKill = convertToTime( gData[0].killmail_time);
   // Get timespan of data
   var killTimespan = Math.round((lastKill.getTime()-firstKill.getTime()) / MS_PER_MINUTE )+1;
   var xAxis = [];
@@ -289,7 +289,7 @@ function generateKillChartData(typeOfChart)
         // Get the players first kill or loss time
         var kill = ship.kills[ship.kills.length-1];
         var fullKill = _.find(gData, function(killmail){ return kill.killmail_id == killmail.killmail_id });
-        var killTime = convertToTime(fullKill.killTime);
+        var killTime = convertToTime(fullKill.killmail_time);
         var timeIndex = Math.floor((killTime.getTime()-firstKill.getTime())/ MS_PER_MINUTE / interval);
         if(firstTimeIndex == -1){
           firstTimeIndex = timeIndex;
@@ -316,12 +316,12 @@ function generateKillChartData(typeOfChart)
   }
   else
   {
-    var kills = _.groupBy( gData, 'killTime' );
+    var kills = _.groupBy( gData, 'killmail_time' );
     _.each(kills, function(timeslice)
     {
       _.each(timeslice,function(kill)
       {
-        var killTime = convertToTime(kill.killTime);
+        var killTime = convertToTime(kill.killmail_time);
         var timeIndex = Math.floor((killTime.getTime()-firstKill.getTime())/ MS_PER_MINUTE / interval);
         var teamIndex = getTeam(kill.victim.alliance_id ? kill.victim.alliance_id : kill.victim.corporation_id );
         if(teamIndex > -1){
