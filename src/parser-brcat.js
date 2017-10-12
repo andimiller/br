@@ -66,7 +66,7 @@ async function loadEntryWindowData( entryWindow )
 
 async function fetchPages (params, page = 1) {
   const data = await json(url(Object.assign(params, { page })));
-  $('#status').text( 'Reading data for ' + (params.type.name == "solarSystemID" ? solarSystemIDtoName(params.type.id) : params.type.name + ":" + params.type.id) + ' from ' + params.startTime + ' to ' + params.endTime + ', page #' + (params.totalPages + page) );
+  $('#status').text( 'Reading data for ' + (params.type.name == "solarSystemID" ? solarSystemIDtoName(params.type.id) : params.type.name + ":" + params.type.id) + ' from ' + params.start + ' to ' + params.end + ', page #' + (params.totalPages + page) );
   if (page !== 10 && data.length === 200)
     return data.concat(await fetchPages(params, ++page));
   else
