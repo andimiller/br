@@ -321,6 +321,7 @@ async function parseKillRecord( kill, entities )
     }
   }
 
+  // augment with names
   [kill.victim].concat(kill.attackers).forEach(character => {
     if (character.character_id)
       character.name = entities.characters[character.character_id];
