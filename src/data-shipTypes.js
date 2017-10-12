@@ -541,10 +541,10 @@ function initShipTypes( )
 ///////////////////////////////////////////////////////////// SOV structures /////////////////////////////////////
 
 // Citadels
-'{"I": 40340, "N": "Upwell Palatine Keepstar",                      "G": "Citadel",                    "O": 9000 },',
-'{"I": 35834, "N": "Keepstar",                                      "G": "Citadel",                    "O": 9001 },',
-'{"I": 35833, "N": "Fortizar",                                      "G": "Citadel",                    "O": 9002 },',
-'{"I": 35832, "N": "Astrahus",                                      "G": "Citadel",                    "O": 9003 },',
+'{"I": 40340, "N": "Upwell Palatine Keepstar",                      "G": "Citadel",                    "O": 0050 },',
+'{"I": 35834, "N": "Keepstar",                                      "G": "Citadel",                    "O": 0051 },',
+'{"I": 35833, "N": "Fortizar",                                      "G": "Citadel",                    "O": 0052 },',
+'{"I": 35832, "N": "Astrahus",                                      "G": "Citadel",                    "O": 0054 },',
 
 // TCUs
 '{"I": 32300, "N": "QA Territorial Claim Unit",                     "G": "SOV Structure",              "O": 10000 },',
