@@ -81,7 +81,7 @@ function buildKillTable( )
     var row = [
       //killMailIdx,
       eveImageLink( 'Character', killMail.victim.character_id ), zKillLink( 'character', killMail.victim.character_id, killMail.victim.characterName ),
-      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, killMail.victim.allianceName ),
+      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, killMail.victim.alliance_name ),
       //killMail.attackers.length,
       Math.round( killMail.victim.damage_taken / 1000 ),
       eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killmail_id, ship_type_idtoName( killMail.victim.ship_type_id )),
@@ -369,12 +369,12 @@ function draw_class_summary_table( target )
         {
           assert( ship.fielded >= 0 );
           assert( ship.lost >= 0 );
-          assert( ship.damageDealt >= 0 );
+          assert( ship.damage_dealt >= 0 );
           assert( ship.damage_taken >= 0 );
           assert( ship.iskLost >= 0 );
           sumTableItem.fielded[ targetTeam ]  += ship.fielded;        
           sumTableItem.lost[ targetTeam ]     += ship.lost;           
-          sumTableItem.dmgDealt[ targetTeam ] += ship.damageDealt;    
+          sumTableItem.dmgDealt[ targetTeam ] += ship.damage_dealt;    
           sumTableItem.dmgTaken[ targetTeam ] += ship.damage_taken;    
           sumTableItem.iskLost[ targetTeam ]  += ship.iskLost;
 
@@ -385,7 +385,7 @@ function draw_class_summary_table( target )
             totalItem.lost[ targetTeam ]      += ship.lost;
           }
           totalItem.iskLost[ targetTeam ]     += ship.iskLost;     
-          totalItem.dmgDealt[ targetTeam ]    += ship.damageDealt;     
+          totalItem.dmgDealt[ targetTeam ]    += ship.damage_dealt;     
           totalItem.dmgTaken[ targetTeam ]    += ship.damage_taken;         
         }
       } );
@@ -470,8 +470,8 @@ function draw_class_summary_table( target )
 function initInvolvedEntry( player )
 {
   var invEntry = new Object;
-  invEntry.allianceName = player.allianceName;
-  invEntry.corporationName = player.corporationName;
+  invEntry.alliance_name = player.alliance_name;
+  invEntry.corporation_name = player.corporation_name;
   invEntry.corporation_id = player.corporation_id;
   invEntry.alliance_id = player.alliance_id;
   invEntry.playerName = player.name;
@@ -509,7 +509,7 @@ function buildInvolved()
           teamLosses[ player.group.team ] += ship.lost;
           var temp = gShipTypes.find(X => X.I == ship.ship_type_id);
           if ( temp != undefined )
-            console.log( '(' + teamLosses[ player.group.team ] + ') adding ' + ship.lost + ' loss(es) to team #' + player.group.team + ' for ' + player.name + '(' + player.corporationName + ') [' + player.allianceName + ']: ' + temp.N );
+            console.log( '(' + teamLosses[ player.group.team ] + ') adding ' + ship.lost + ' loss(es) to team #' + player.group.team + ' for ' + player.name + '(' + player.corporation_name + ') [' + player.alliance_name + ']: ' + temp.N );
           // this assumes the kills list is sorted
           ship.kills.forEach(( kill, killIdx ) => {
             invEntry.shipID = ship.ship_type_id;
@@ -702,9 +702,9 @@ function  setRIDtext(teamIDX,invIndex)
   $('#RIDship').empty();
   $('#RIDship').append(target.shipData.N);
   $('#RIDcorp').empty();
-  $('#RIDcorp').append('<img src="https://image.eveonline.com/Corporation/'+target.corporation_id+'_32.png" style="width: 16px;">'+target.corporationName);
+  $('#RIDcorp').append('<img src="https://image.eveonline.com/Corporation/'+target.corporation_id+'_32.png" style="width: 16px;">'+target.corporation_name);
   $('#RIDalliance').empty();
-  $('#RIDalliance').append('<img src="https://image.eveonline.com/Alliance/'+target.alliance_id+'_32.png" style="width: 16px;">'+target.allianceName);
+  $('#RIDalliance').append('<img src="https://image.eveonline.com/Alliance/'+target.alliance_id+'_32.png" style="width: 16px;">'+target.alliance_name);
   $('#RIDclass').empty();
   $('#RIDclass').append(target.shipData.G);
   $('#RIDkills').empty();
@@ -1016,7 +1016,7 @@ function buildBlockBody(block,teamIDX)
     var id = 'p'+blockShip.index+'-'+ teamIDX;
     titleText = blockShip.playerName 
               + ' [' 
-              + blockShip.corporationName 
+              + blockShip.corporation_name 
               + '] ' 
               + blockShip.shipData.N 
               + ': ' 
@@ -1581,8 +1581,8 @@ function generateKillMailCell( cellClass, invEntry, nonTeamLosses )
   var imageLink      = eveImageLink( 'Render', invEntry.shipData.I );
   var leftUpperCell  = zKillLink( 'character', invEntry.playerID, invEntry.playerName ) + ' ' + ( invEntry.podKillID == 0 ? '' : zKillLink( 'detail', invEntry.podKillID, '[Pod]' ));
   var leftLowerCell  = invEntry.shipData.N;
-  var rightUpperCell = zKillLink( 'corporation', invEntry.corporation_id, invEntry.corporationName );
-  var rightLowerCell = zKillLink( 'alliance', invEntry.alliance_id, invEntry.allianceName );
+  var rightUpperCell = zKillLink( 'corporation', invEntry.corporation_id, invEntry.corporation_name );
+  var rightLowerCell = zKillLink( 'alliance', invEntry.alliance_id, invEntry.alliance_name );
 
   var cellData   = TableData( 'view-involvedIcon ' + cellClass, invEntry.victim ? zKillLink( 'kill', invEntry.killmail_id, imageLink ) : imageLink );
   cellData      += TableData( 'teamText ' + cellClass, Bold( leftUpperCell )  + '<br>' + leftLowerCell );
@@ -1759,7 +1759,7 @@ function oldFunction()
       var thisTime = new Date(invEntry.time);
       var offsetTime = new Date( Date.parse(minDateTime) + (60000*gAnimationOffset) );
       // generate title text for ship icon
-      var titleText = invEntry.playerName + ' [' + invEntry.corporationName + '] ' + invEntry.shipData.N + ': ' + invEntry.kills + ' kills';
+      var titleText = invEntry.playerName + ' [' + invEntry.corporation_name + '] ' + invEntry.shipData.N + ': ' + invEntry.kills + ' kills';
       
       // if this ship icon is a victim
       if(invEntry.victim){
