@@ -55,7 +55,7 @@ async function startParsing( )
   {
     var target = document.getElementById( 'ux-helpInfo' );
     gSpinner = new Spinner( opts ).spin( target );
-  }, 500 );
+  }, 50 );
 
   $( '#status' ).text( 'Fetching Data...');
   $( '#status' ).addClass( 'ui-state-default ui-state-error' );
@@ -229,13 +229,15 @@ function remove_team( )
 
 function refresh( )
 {
+  var now = Date.now();
   waitCursor( true );
-  _.each( gTabs, function( tab ) { tab.dirty = true; } );
+  gTabs.forEach(tab => { tab.dirty = true; });
   draw_team_table( gTeams );
   var currentTab = $( '#tabs' ).tabs( 'option', 'active' );
   update_active_tab( gTabs[ currentTab ] );
   updateShareLink( );
   waitCursor( false );
+  console.log("refresh took", Date.now() - now);
 }
 
 function update_active_tab( activeTab )
@@ -448,13 +450,11 @@ function draw_team_table( newData )
   var width = Math.floor( 100 / newData.length );
   var tableData = '<table class="ux-selTbl ux-selMain ui-widget-content ui-corner-all">';
 
-  _.each( newData, function( team, teamIdx )
-  {
+  newData.forEach(( team, teamIdx ) => {
     var oddOrEven = 0;
     var memberCount = 0;
     var tableContent = '';
-    _.each( team, function( teamMember, teamMemberIdx )
-    {
+    team.forEach(( teamMember, teamMemberIdx ) => {
       var buttonPrev = '';
       var buttonNext = '';
 
@@ -499,7 +499,7 @@ function draw_team_table( newData )
     var shipsLost = teamShipsLost[teamIdx]
     var iskLost = teamIskValues[teamIdx];
     var iskTotal = 0;
-    _.each(teamIskValues, function(isk){
+    teamIskValues.forEach((isk) => {
       iskTotal += isk;
     });
     if(iskTotal == 0){
@@ -527,46 +527,9 @@ function changeTheme( )
     var newTheme = './jquery-ui-1.11.2.custom/jquery-ui.css'
   }
   else{
-    var newTheme = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/' + gTheme + '/jquery-ui.min.css';
+    var newTheme = '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/' + gTheme + '/jquery-ui.min.css';
   }
   $('#theme_css').attr( 'href', newTheme );
   console.log( 'changeTheme: setting theme to ' + gTheme );
-/*  
-  setTimeout( function( )
-  {
-    var background = $('.ui-widget-content').css('background-color');
-    var r, g, b;
-    var index = background.indexOf( '#' );
-    if ( index >=0 )
-    {
-      r = parseInt( background.substring( index, index + 2 ));
-      g = parseInt( background.substring( index + 2, index + 4 ));
-      b = parseInt( background.substring( index + 4, index + 6 ));
-    }
-    else
-    {
-      index = background.indexOf( '(' );
-      if ( index >= 0 )
-      {
-        var rgb = background.match( /\d+/g );
-        r = parseInt( rgb[ 0 ] );
-        g = parseInt( rgb[ 1 ] );
-        b = parseInt( rgb[ 2 ] );
-      }
-    }
-    var weight = ( r > 127 ? 1 : 0 );
-    weight += ( g > 127 ? 1 : 0 );
-    weight += ( b > 127 ? 1 : 0 );
-    if ( weight < 2 )
-    {
-      $('#theme_ux_css').attr( 'href', 'dark.css' );
-    }
-    else
-    {
-      $('#theme_ux_css').attr( 'href', 'light.css' );
-    }
-  } , 500 );
-*/  
-//  $('#theme_ux_css').attr( 'href', 'dark.css' );
   writeCookies( );
 }

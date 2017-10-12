@@ -733,7 +733,7 @@ function generateSummary( startTime, endTime, lastKillTime, workingFlag )
     outputText += ' so far';
   else
   {
-    addTab( 10,  'Involved',       'involvedTable',     function( ) { generateInvolved( '#involvedTable' ); } );
+    addTab( 10,  'Involved',       'involvedTable',     function( ) { generateInvolved(); } );
     addTab( 20,  'Class Summary',  'classSummaryTable', function( ) { draw_class_summary_table( '#classSummaryTable' ); } );
     addTab( 30,  'Ship Summary',   'summaryTable',      function( ) { draw_summary_table( '#summaryTable',gTeams ); } );
     addTab( 40,  'Timeline',       'timeLine',          function( ) { generateBattleTimeline( '#timeLine' ); } );

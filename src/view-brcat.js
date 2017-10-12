@@ -496,36 +496,33 @@ function buildInvolved()
 
   profile( 'involved-genTempData', function( ) {
     // iterate through all the players once to generate the involved entries
-    _.each( gPlayers, function( player, playerIdx )
-    {
+    gPlayers.forEach(( player, playerIdx ) => {
       assert( player.group.team < involved.length );
       assert( player.name != DEBUG_PLAYER );
       var tempData = [];
       // team == -1 if the group is considered 'insignificant'
       if ( player.group.team >= 0 )
       {
-        _.each( player.ships, function( ship, shipIdx )
-        {
+        player.ships.forEach(( ship, shipIdx ) => {
           var invEntry = initInvolvedEntry( player );
           invEntry.kills = ship.kills.length;
           teamLosses[ player.group.team ] += ship.lost;
-          var temp = _.find( gShipTypes, function( X ) { return X.I == ship.ship_type_id; } );
+          var temp = gShipTypes.find(X => X.I == ship.ship_type_id);
           if ( temp != undefined )
             console.log( '(' + teamLosses[ player.group.team ] + ') adding ' + ship.lost + ' loss(es) to team #' + player.group.team + ' for ' + player.name + '(' + player.corporationName + ') [' + player.allianceName + ']: ' + temp.N );
           // this assumes the kills list is sorted
-          _.each( ship.kills, function( kill, killIdx )
-          {
+          ship.kills.forEach(( kill, killIdx ) => {
             invEntry.shipID = ship.ship_type_id;
             invEntry.time   = kill.time;
             if ( kill.victim )
             {
               invEntry.victim = true;
               invEntry.killmail_id = kill.killmail_id;
-              invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == invEntry.shipID; } );
+              invEntry.shipData = gShipTypes.find(X => X.I == invEntry.shipID);
               if ( invEntry.shipData == undefined )
               {
                 var j = 0;
-                invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == 0; } );
+                invEntry.shipData = gShipTypes.find(X => X.I == 0);
               }
               tempData.push( invEntry );
               invEntry = initInvolvedEntry( player );
@@ -543,19 +540,18 @@ function buildInvolved()
           {
             if ( invEntry.shipID >= 0 )
             {
-              invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == invEntry.shipID; } );
+              invEntry.shipData = gShipTypes.find(X => X.I == invEntry.shipID);
               if ( invEntry.shipData == undefined )
               {
                 var j = 0;
-                invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == 0; } );
+                invEntry.shipData = gShipTypes.find(X => X.I == 0);
               }
               tempData.push( invEntry );
             }
           }
         } );
       }
-      tempData.sort( function( lhs, rhs )
-      {
+      tempData.sort(( lhs, rhs ) => {
         // sort predicate:  if the killtimes are equal then put the pod after the
         //                  ship in the kill list
         if ( lhs.time == rhs.time )
@@ -567,8 +563,7 @@ function buildInvolved()
       var prevEntry = undefined;
       // iterate through the tempData list of involved ships for the player and link
       // any pod deaths to the death immediately preceeding it in the chronological list
-      _.each( tempData, function( invEntry )
-      {
+      tempData.forEach(( invEntry ) => {
         if ( invEntry.victim && isCapsule( invEntry.shipID ) && prevEntry != undefined )
         {
           prevEntry.podKillID = invEntry.killmail_id;
@@ -841,7 +836,7 @@ function pauseOffset(){
 function playLoop(endTime){
   if(gAnimationPlaying){
     addOffset(endTime);
-    setTimeout(function(){playLoop(endTime);},1000);
+    setTimeout(function(){playLoop(endTime);},500);
   }
 }
 
@@ -1545,7 +1540,7 @@ function subGenerateAnimation( target, involved )
     });
 }
 
-function generateInvolved( target )
+function generateInvolved()
 {
   var width = Math.round( 100 / gTeams.length );
   
@@ -1558,8 +1553,7 @@ function generateInvolved( target )
   var totalLosses = returnValue.pop();
 
   profile( 'involved-htmlOutput', function( ) {
-    _.each( involved, function( team, teamIdx )
-    {
+    involved.forEach(( team, teamIdx ) => {
       var oddRow = true;
       html.push( '<td class="view-involved" width=' + width + '%>' );
       html.push( '  <table class="view-involvedDetail ui-widget-content">' );
@@ -1567,8 +1561,7 @@ function generateInvolved( target )
       html.push( '      <th colspan=2>Pilot/Ship</td>' );
       html.push( '      <th>Corp/Alliance</td>' );
       html.push( '    </thead>' );
-      _.each( team, function( invEntry )
-      {
+      team.forEach(( invEntry ) => {
         var rowClass = TEAM_COLORS[ teamIdx ] + ( invEntry.victim ? 'Kill' : oddRow ? 'Odd' : 'Even' );
         var rowData = generateKillMailCell( '', invEntry, totalLosses - teamLosses[ teamIdx ] );
         html.push( TableRow( rowClass, rowData ));
@@ -1579,20 +1572,11 @@ function generateInvolved( target )
     } );
     html.push( '</tr></table>' );
   } );
-  var node = document.getElementById( 'involvedTable' );
   profile( 'involved-empty', function( )
   {
-//    node.innerHTML = null;
-//    node.parentNode.replaceChild( node.cloneNode( false ), node );
-    var node = document.getElementById( 'involvedTable' );
-    while( node.hasChildNodes( ))
-    {
-      node.removeChild( node.lastChild );
-    }
+    document.getElementById( 'involvedTable' ).innerHTML = "";
   } );
-//  profile( 'involved-empty',    function( ) { $( target ).empty( ); } );
-  profile( 'involved-append',   function( ) { $( target ).append( html.join( '' )); } );
-//  profile( 'involved-html', function( ) { $( target ).html( html ); } );
+  profile( 'involved-append',   function( ) { document.getElementById( 'involvedTable' ).innerHTML = html.join( '' ); } );
 }
 
 function generateKillMailCell( cellClass, invEntry, nonTeamLosses )
