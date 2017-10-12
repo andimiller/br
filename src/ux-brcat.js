@@ -55,7 +55,7 @@ async function startParsing( )
   {
     var target = document.getElementById( 'ux-helpInfo' );
     gSpinner = new Spinner( opts ).spin( target );
-  }, 50 );
+  }, 500 );
 
   $( '#status' ).text( 'Fetching Data...');
   $( '#status' ).addClass( 'ui-state-default ui-state-error' );
