@@ -40,6 +40,14 @@ var gShipTypes =  initShipTypes( );
 var gCoalitionData = initCoalitions( );
 var gCoalitionNames = _.sortBy( _.uniq( _.pluck( gCoalitionData, 'shortName' )), function( X ) { return X; } );
 var gFactionData = initFactions( );
+var gEntityNames = function (ids) {
+  return Promise.all(createGroupedArray(ids, 1000).map(chunk => fetch("https://esi.tech.ccp.is/v2/universe/names/", { method: "POST", body: JSON.stringify(chunk) }).then(res => res.json()))).then(chunks => {
+    return _.flatten(chunks).reduce((p, c) => {
+      p[c.category + "s"][c.id] = c.name;
+      return p;
+    }, { characters: {}, corporations: {}, alliances: {} });
+  });
+};
 var gCharacterNames = _.memoize(function(ids) {
   return fetch("https://esi.tech.ccp.is/v1/characters/names/?character_ids="+ids.join(",")).then(res => res.json()).then(res => {
     return _.pluck(res, "character_name")
