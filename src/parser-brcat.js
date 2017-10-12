@@ -31,33 +31,6 @@ async function loadEntryWindowData( entryWindow )
     }
   }
 
-  // if our number of tasks is 0 ( really shouldn't ever be negative ), then all the ajax requests
-  // we have posted have finished, therefore we should go ahead and process the data we have collected
-  // and present the user the team selection UI
-  if ( --gTasks <= 0 )
-  {
-    $('#status').text( 'Compiling pilot statistics...' );
-    // generate our final summary line
-    generateSummary( 0, 0, 0, false );
-    //gData = _.sortBy( gData, function( killRecord ) { return killRecord.killmail_time; } );
-    gData = killmails;
-
-    var elapsed = ( new Date( )).getTime( ) - gProcessingTime.getTime( );
-    console.log( 'processing time: ' + elapsed + ' ms' );
-
-    build_data( );
-    $('#status').text( 'Ready for team selection.' );
-    if ( gSpinner != undefined )
-    {
-      gSpinner.stop( );
-      gSpinner = undefined;
-    }
-    refresh( );
-  }
-  if(gOptGotoReplay){
-    $( "#tabs" ).tabs( "option", "active", 4 );
-  }
-  waitCursor( false );
 }
 
 // /////////////////////////////////////// ZKillboard parsing ///////////////////////////////////////////
@@ -554,6 +527,7 @@ function addGroup( player )
 function updateGroup( groupIndex, player )
 {
   var group = gGroups[ groupIndex ];
+  console.log("inc players");
   ++group.players;
   // Check each ship for this player
   _.each( player.ships, function( playerShip )
