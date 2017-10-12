@@ -898,7 +898,7 @@ function buildTeamHeading(team, teamIDX)
     var offsetTime = new Date( Date.parse(gMinDateTime) + (60000*gAnimationOffset) );
     var newTeam = [];
     _.each(team, function(member) {
-      var thisTime = new Date(member.time.replace(/-/g,"/"));
+      var thisTime = new Date(member.time);
       if(thisTime <= offsetTime){
         if(member.victim){
           newTeam.push(member);
@@ -965,7 +965,7 @@ function buildBlockHeading(block)
     var blockLoss = 0;
     var offsetTime = new Date( Date.parse(gMinDateTime) + (60000*gAnimationOffset) );
     _.each(block, function(invEntry){
-      var thisTime = new Date(invEntry.time.replace(/-/g,"/"));
+      var thisTime = new Date(invEntry.time);
       if(thisTime <= offsetTime){
         if(invEntry.victim){
           iskLost += invEntry.iskLost;
@@ -1272,9 +1272,6 @@ function subGenerateAnimation( target, involved )
     } );
   } );
   
-  minTime = minTime.replace(/-/g,"/");
-  maxTime = maxTime.replace(/-/g,"/");
-  
   gMaxDateTime = new Date(maxTime);
   gMinDateTime = new Date(minTime);
   var timeSpan = (gMaxDateTime - gMinDateTime)/1000/60;
@@ -1384,7 +1381,7 @@ function subGenerateAnimation( target, involved )
     var iskLost = 0;
     _.each(team, function(invEntry, invIndex){
       if (invEntry.victim){
-        var thisTime = new Date(invEntry.time.replace(/-/g,"/"));
+        var thisTime = new Date(invEntry.time);
         if(thisTime <= offsetTime){
           diedSoFar.push('p'+invIndex+'-'+teamIdx);
           if(offsetTime-thisTime < (60000*gAnimationSpeed)){
@@ -1397,7 +1394,7 @@ function subGenerateAnimation( target, involved )
       if(invEntry.aggressor!=undefined){
         var addedFlag = false;
         _.each(invEntry.aggressor, function(aggro){
-          var thisTime = new Date(aggro[0].replace(/-/g,"/"));
+          var thisTime = new Date(aggro[0]);
           if(thisTime<=offsetTime && !addedFlag){
             if(offsetTime-thisTime < (60000*gAnimationSpeed)){
               attackersThisFrame.push('p'+invIndex+'-'+teamIdx);
