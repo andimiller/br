@@ -42,7 +42,7 @@ var gCoalitionNames = _.sortBy( _.uniq( _.pluck( gCoalitionData, 'shortName' )),
 var gFactionData = initFactions( );
 var gCharacterNames = _.memoize(function(ids) {
   return fetch("https://esi.tech.ccp.is/v1/characters/names/?character_ids="+ids.join(",")).then(res => res.json()).then(res => {
-    return _.pluck(body, "character_name")
+    return _.pluck(res, "character_name")
   }).catch(e => []);
 });
 var gCharacterNameCache = _.memoize(function(id) {
