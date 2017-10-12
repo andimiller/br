@@ -1,80 +1,33 @@
 async function loadEntryWindowData( entryWindow )
 {
-  var systemName = entryWindow.system.toUpperCase( );
-  var systemData = _.find( gSolarSystems, function ( solarsystem ) { return solarsystem.N.toUpperCase( ) == systemName; } );
-  await readZkbData( 1 , createZkbDateStart( entryWindow.startTime ), createZkbDateEnd( entryWindow.endTime ), systemData, 0 );
-}
+  const systemName = entryWindow.system.toUpperCase( );
+  const systemID = gSolarSystems.find(solarsystem => solarsystem.N.toUpperCase() === systemName).I;
 
-// /////////////////////////////////////// ZKillboard parsing ///////////////////////////////////////////
+  const killmails = await loadKillmails({ type: { name: "solarSystemID", id: systemID }, start: createZkbDateStart( entryWindow.startTime ), end: createZkbDateEnd( entryWindow.endTime ) });
 
-function testCallBack()
-{
-  console.log('callback');
-}
+  const { characterIDs, corporationIDs, allianceIDs } = [].concat(...killmails.map(({ victim, attackers }) => [victim].concat(attackers))).reduce((p, { character_id, corporation_id, alliance_id }) => {
+    if (character_id)
+      p.characterIDs.add(character_id);
+    if (corporation_id)
+      p.corporationIDs.add(corporation_id);
+    if (alliance_id)
+      p.allianceIDs.add(alliance_id);
+    return p;
+  }, { characterIDs: new Set(), corporationIDs: new Set(), allianceIDs: new Set() });
 
-async function readZkbData( pageNumber, startTime, endTime, systemData , offset )
-{
-  var pageNumModTen = (( pageNumber - 1 ) % 10 ) + 1;
-  var zKillURL = 'https://zkillboard.com/api/kills/solarSystemID/' + systemData.I + '/startTime/' + startTime + '/endTime/' + endTime +'/page/' + pageNumModTen + '/';
-  if( offset != 0 )
-  {
-    zKillURL += 'beforeKillID/' + offset + '/';
-  }
-  console.log( zKillURL );
-
-  // gTasks: now incrementing a global variable named gTasks whenever we issue any ajax request. AFTER
-  //         our success or error handler method is called and complete, we then decrement the gTasks
-  //         global to keep track of how many outstanding requests are pending so that we know when we
-  //         are done receiving data and should start processing the data
-  ++gTasks;
-  waitCursor( true );
-  
-  console.log("doing zkill query");
-  console.log(zKillURL);
-
-  await fetch(zKillURL).then(res => res.json()).then(corsResponse => parseZkbData( corsResponse, pageNumber, startTime, endTime, systemData ))
-
-}
-
-async function parseZkbData( response, pageNumber, startTime, endTime, systemData )
-{
-  //console.log(response);
-  // must set status BEFORE posting any additional ajax requests
-  $('#status').text( 'Reading data for ' + systemData.N + ' from ' + startTime + ' to ' + endTime + ', page #' + pageNumber );
-
-  // TODO: need to add code to generate new query if we more than 10 pages of results
-  
-  // if we get a full set of results, go ahead and post the ajax request for the next set of data
-  if( response.length == 200 )
-  {
-    // since zKillBoard will only send us at most 10 pages of data, if we have a full set of results
-    // on our tenth page we need to adjust the time window and resubmit the query.  the code inside of
-    // readZkbData is responsible for doing a modulo 10 on the page number to keep it valid for zKillBoard,
-    // thus we can keep the page number incrementing and display a total number of pages read
-    if ( pageNumber % 10 == 0 )
-    {
-      // set time of last kill we got to page through the available data
-      var lastKillTime = response[ response.length - 1 ].killmail_time.replace(/:/g,'').replace(/-/g,'').replace(/ /g,'').substring(0,12);
-      generateSummary( startTime, endTime, lastKillTime, true );
-      await readZkbData( pageNumber + 1 , startTime, lastKillTime, systemData, 0 );
-    }
-    else
-    {
-      generateSummary( startTime, endTime, lastKillTime, true );
-      await readZkbData( pageNumber + 1 , startTime, endTime, systemData, 0 );
-    }
-  }
-
-  var ids = Array.from(new Set(_.flatten(response.map(kill => [kill.victim].concat(kill.attackers).map(entity => [entity.character_id, entity.corporation_id, entity.alliance_id]))).filter(x => !!x)));
-  var entities = await gEntityNames(ids);
+  const idToName = new Map([
+    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/characters/names/?character_ids=", Array.from(characterIDs), 100), "character_id", "character_name"), 
+    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/corporations/names/?corporation_ids=", Array.from(corporationIDs), 100), "corporation_id", "corporation_name"), 
+    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/alliances/names/?alliance_ids=", Array.from(allianceIDs), 100), "alliance_id", "alliance_name")
+  ]);
 
   // if length != 0, we got some results back, go ahead and push those results into our global set
-  for (var element of response) {
+  for (var element of killmails) {
     if ( gData[ '' + element.killmail_id ] == undefined )
     {
       ++gDataCount;
       gData[ '' + element.killmail_id ] = element;
-      await parseKillRecord( element, entities );
+      await parseKillRecord( element, idToName );
     }
   }
 
@@ -85,8 +38,9 @@ async function parseZkbData( response, pageNumber, startTime, endTime, systemDat
   {
     $('#status').text( 'Compiling pilot statistics...' );
     // generate our final summary line
-    generateSummary( startTime, endTime, startTime, false );
-    gData = _.sortBy( gData, function( killRecord ) { return killRecord.killmail_time; } );
+    generateSummary( 0, 0, 0, false );
+    //gData = _.sortBy( gData, function( killRecord ) { return killRecord.killmail_time; } );
+    gData = killmails;
 
     var elapsed = ( new Date( )).getTime( ) - gProcessingTime.getTime( );
     console.log( 'processing time: ' + elapsed + ' ms' );
@@ -105,6 +59,50 @@ async function parseZkbData( response, pageNumber, startTime, endTime, systemDat
   }
   waitCursor( false );
 }
+
+// /////////////////////////////////////// ZKillboard parsing ///////////////////////////////////////////
+
+//////////////
+
+async function fetchPages (params, page = 1) {
+  const data = await json(url(Object.assign(params, { page })));
+  $('#status').text( 'Reading data for ' + (params.type.name == "solarSystemID" ? solarSystemIDtoName(params.type.id) : params.type.name + ":" + params.type.id) + ' from ' + params.startTime + ' to ' + params.endTime + ', page #' + (params.totalPages + page) );
+  if (page !== 10 && data.length === 200)
+    return data.concat(await fetchPages(params, ++page));
+  else
+    return data;
+};
+
+const json = (...args) => fetch(...args).then(res => res.json());
+
+const chunkedJson = (url, ids, size) => Promise.all(ids.chunk(size).map(chunk => json(url + chunk.join()))).then(chunks => [].concat(...chunks));
+
+async function loadKillmails (params, start = params.start, totalPages = 0) {
+  const data = await fetchPages(Object.assign(params, { start, totalPages }));
+  if (data.length !== 0 && data.length === 200 * 10) {
+    const lastKillmail = data[data.length - 1];
+    const killmails = await loadKillmails(params, lastKillmail.killmail_time.replace(/:|-| |T/g,'').substring(0, 10) + "00", totalPages + 10);
+    const lastKillIndex = killmails.findIndex(({ killmail_id }) => killmail_id === lastKillmail.killmail_id);
+    return data.concat(killmails.slice(lastKillIndex + 1));
+  } else {
+    return data;
+  }
+}
+
+Object.defineProperty(Array.prototype, 'chunk', {
+  value: function(chunkSize) {
+    let R = [];
+    for (let i = 0; i < this.length; i += chunkSize)
+      R.push(this.slice(i, i + chunkSize));
+    return R;
+  }
+});
+
+const url = ({ type: { name, id }, start, end, page }) => `https://zkillboard.com/api/kills/${name}/${id}/startTime/${start}/endTime/${end}/page/${page}/`;
+
+const toMap = (arr, key, value) => new Map(arr.map(el => [el[key], el[value]]));
+
+//////////////
 
 // /////////////////////////////////////// eve-kill parsing ///////////////////////////////////////////
 
@@ -307,7 +305,7 @@ function createGroupedArray(arr, chunkSize) {
     return groups;
 }
 
-async function parseKillRecord( kill, entities )
+async function parseKillRecord( kill, idToName )
 {
   // Check each kill
   assert( kill != undefined );
@@ -321,26 +319,16 @@ async function parseKillRecord( kill, entities )
     }
   }
 
-  // augment with names
-  [kill.victim].concat(kill.attackers).forEach(character => {
-    if (character.character_id)
-      character.name = entities.characters[character.character_id];
-    if (character.corporation_id)
-      character.corporation_name = entities.corporations[character.corporation_id];
-    if (character.alliance_id)
-      character.alliance_name = entities.alliances[character.alliance_id];
-  });
-
   // Process victim
   if ( kill.victim.ship_type_id == 32250 )
   {
     var foo = 0;
   }
-  await updateShip( kill.victim, kill, kill.victim );
+  await updateShip( kill.victim, kill, kill.victim, idToName );
 
   // Check each attacker
   for (var attacker of kill.attackers)
-    await updateShip(attacker, kill, kill.victim);
+    await updateShip(attacker, kill, kill.victim, idToName);
 }
 
 function handleUnknownShips()
@@ -386,15 +374,15 @@ function parseGroupData( killdata )
   var NowTimeEnd = new Date();
 }
 
-async function updateShip( player, kill, victim )
+async function updateShip( player, kill, victim, idToName )
 {
-  var playerIndex = await checkPlayerExists( player );
+  var playerIndex = await checkPlayerExists( player, idToName );
   var shipIndex = checkShipExists( player, playerIndex );
   var newKill = new Object;
   newKill.killmail_id = kill.killmail_id;
   newKill.time = kill.killmail_time;
   assert( victim != undefined );
-  newKill.player = gPlayers[ await checkPlayerExists( victim ) ];
+  newKill.player = gPlayers[ await checkPlayerExists( victim, idToName ) ];
   newKill.victim = ( player.character_id == victim.character_id );
   newKill.iskLost = 0;
   newKill.ship_type_id = player.ship_type_id;
@@ -425,15 +413,13 @@ async function updateShip( player, kill, victim )
 
 // Player Functions
   
-async function checkPlayerExists( player )
+async function checkPlayerExists( player, idToName )
 {
-  assert( player.characterName != DEBUG_PLAYER );
   // this method is more complex than it needs to be due to bugs in the eve killmails themselves.
   // since these mails sometimes just decide to omit the corporation and corporation_id from the data,
   // we use some logic to determine if player record being checked is actually already in the global
   // list or not
-  var foundPlayer = _.find( gPlayers, function( testPlayer, index )
-  {
+  var foundPlayer = gPlayers.find(( testPlayer, index ) => {
     // if the player names are equal, either the corp ID or the alliance ID needs to match
     // as well, since for structures the player name is an empty string
     if ( player.character_id == testPlayer.character_id )
@@ -456,7 +442,7 @@ async function checkPlayerExists( player )
         if ( equal )
         {
           testPlayer.corporation_id   = player.corporation_id;
-          testPlayer.corporationName = player.corporationName;
+          testPlayer.corporationName = idToName.get(player.corporation_id);
         }
       }
       // player being checked does not have a corp ID, return the result of the alliance
@@ -466,24 +452,21 @@ async function checkPlayerExists( player )
     // player names are not equal, definitely not the same player entity
     return false;
   } );
-  return foundPlayer != undefined ? foundPlayer.index : await addplayer( player );
+  return foundPlayer != undefined ? foundPlayer.index : await addplayer( player, idToName );
 }
 
-async function addplayer( player )
+async function addplayer( player, idToName )
 {
-  assert( player.characterName != DEBUG_PLAYER );
   var newplayer = new Object;
   newplayer.alliance_id       = player.alliance_id;
-  //newplayer.allianceName     = await gAllianceNameCache(player.alliance_id);
-  newplayer.allianceName     = player.alliance_name;
+  newplayer.allianceName  = idToName.get(player.alliance_id);
   newplayer.corporation_id    = player.corporation_id;
-  //newplayer.corporationName  = await gCorporationNameCache(player.corporation_id);
-  newplayer.corporationName  = player.corporation_name;
+  newplayer.corporationName  = idToName.get(player.corporation_id);
   newplayer.factionID        = player.faction_id;
   newplayer.factionName      = player.faction_id;
   newplayer.id               = player.character_id;
   newplayer.character_id     = player.character_id;
-  newplayer.name             = player.name; //gCharacterNameCache(player.character_id); //player.character_id; // Name;
+  newplayer.name             = idToName.get(player.character_id); //gCharacterNameCache(player.character_id); //player.character_id; // Name;
   newplayer.ships            = [];
   newplayer.index            = gPlayers.length;
   newplayer.damageDealt      = 0;
