@@ -479,7 +479,7 @@ function addship( player, playerIndex )
 
 function checkGroupExists( player )
 {
-  if( player.alliance_id != 0 )
+  if(!!player.alliance_id)
   {
     groupID = player.alliance_id;
   }
@@ -499,7 +499,7 @@ function checkGroupExists( player )
 function addGroup( player )
 {
   var newGroup = new Object;
-  if(player.alliance_id != 0)
+  if(!!player.alliance_id)
   {
     newGroup.ID = player.alliance_id;
     newGroup.name = player.allianceName;
@@ -527,7 +527,6 @@ function addGroup( player )
 function updateGroup( groupIndex, player )
 {
   var group = gGroups[ groupIndex ];
-  console.log("inc players");
   ++group.players;
   // Check each ship for this player
   _.each( player.ships, function( playerShip )
