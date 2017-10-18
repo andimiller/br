@@ -78,10 +78,11 @@ function buildKillTable( )
     {
       var isk = roundIsk( killMail.zkb.totalValue );
     }
+    var victim = _.find(gPlayers, function(x) { return x.character_id == killMail.victim.character_id });
     var row = [
       //killMailIdx,
-      eveImageLink( 'Character', killMail.victim.character_id ), zKillLink( 'character', killMail.victim.character_id, killMail.victim.characterName ),
-      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, killMail.victim.alliance_name ),
+      eveImageLink( 'Character', killMail.victim.character_id ), zKillLink( 'character', killMail.victim.character_id, victim.name ),
+      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, victim.alliance_name ),
       //killMail.attackers.length,
       Math.round( killMail.victim.damage_taken / 1000 ),
       eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killmail_id, ship_type_idtoName( killMail.victim.ship_type_id )),
