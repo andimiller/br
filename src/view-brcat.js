@@ -41,7 +41,7 @@ function generateTable( headerData, rowData, id , colspan )
   return table.join( '' );
 }
 
-function buildKillTable( )
+function buildKillTable( idToName )
 {
   var headerData = [
     //'#',
@@ -80,8 +80,8 @@ function buildKillTable( )
     }
     var row = [
       //killMailIdx,
-      eveImageLink( 'Character', killMail.victim.character_id ), zKillLink( 'character', killMail.victim.character_id, killMail.victim.characterName ),
-      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, killMail.victim.alliance_name ),
+      eveImageLink( 'Character', killMail.victim.character_id ), zKillLink( 'character', killMail.victim.character_id, idToName.get(killMail.victim.character_id) ),
+      eveImageLink( 'Alliance', killMail.victim.alliance_id ),   zKillLink( 'alliance', killMail.victim.alliance_id, idToName.get(killMail.victim.alliance_id) ),
       //killMail.attackers.length,
       Math.round( killMail.victim.damage_taken / 1000 ),
       eveImageLink( 'Render', killMail.victim.ship_type_id ),     zKillLink( 'detail', killMail.killmail_id, ship_type_idtoName( killMail.victim.ship_type_id )),
@@ -102,9 +102,9 @@ function buildKillTable( )
   return rowDataAllTeams;
 }
 
-function draw_team_kill_table( index )
+function draw_team_kill_table( index, idToName )
 {
-  var rowDataAllTeams =  buildKillTable( );
+  var rowDataAllTeams =  buildKillTable( idToName );
   var headerData = rowDataAllTeams.pop( );
   var team = gTeams[ index ];
 
@@ -286,14 +286,11 @@ function draw_localStorageTable()
   $( '#LSTable' ).append( lstText );
 }
 
-function draw_kill_table()
+function draw_kill_table(idToName)
 {
-  var rowDataAllTeams =  buildKillTable( );
+  var rowDataAllTeams =  buildKillTable( idToName );
   var headerData = rowDataAllTeams.pop( );
-  var combinedRowData = [];
-  _.each(rowDataAllTeams, function(rowData){
-    combinedRowData = combinedRowData.concat(rowData);
-  });
+  var combinedRowData = [].concat(...rowDataAllTeams);
   var target = 'ktl';
   var output = generateTable(headerData, combinedRowData, target+'Table');
   $( '#'+target ).empty( );
@@ -1366,9 +1363,6 @@ function subGenerateAnimation( target, involved )
   
   html = html.concat( buildMainWindow(involved) );
   
-  //
-  //oldFunction();
-  
   // write generated html to the replay tab
   $( target ).empty();
   $( target ).append( html.join( '' ));
@@ -1537,7 +1531,7 @@ function subGenerateAnimation( target, involved )
     });
 }
 
-function generateInvolved()
+function generateInvolved(idToName)
 {
   var width = Math.round( 100 / gTeams.length );
   
@@ -1560,7 +1554,7 @@ function generateInvolved()
       html.push( '    </thead>' );
       team.forEach(( invEntry ) => {
         var rowClass = TEAM_COLORS[ teamIdx ] + ( invEntry.victim ? 'Kill' : oddRow ? 'Odd' : 'Even' );
-        var rowData = generateKillMailCell( '', invEntry, totalLosses - teamLosses[ teamIdx ] );
+        var rowData = generateKillMailCell( '', invEntry, totalLosses - teamLosses[ teamIdx ], idToName );
         html.push( TableRow( rowClass, rowData ));
         oddRow = !oddRow;
       } );
@@ -1576,13 +1570,13 @@ function generateInvolved()
   profile( 'involved-append',   function( ) { document.getElementById( 'involvedTable' ).innerHTML = html.join( '' ); } );
 }
 
-function generateKillMailCell( cellClass, invEntry, nonTeamLosses )
+function generateKillMailCell( cellClass, invEntry, nonTeamLosses, idToName )
 {
   var imageLink      = eveImageLink( 'Render', invEntry.shipData.I );
   var leftUpperCell  = zKillLink( 'character', invEntry.playerID, invEntry.playerName ) + ' ' + ( invEntry.podKillID == 0 ? '' : zKillLink( 'detail', invEntry.podKillID, '[Pod]' ));
   var leftLowerCell  = invEntry.shipData.N;
-  var rightUpperCell = zKillLink( 'corporation', invEntry.corporation_id, invEntry.corporation_name );
-  var rightLowerCell = zKillLink( 'alliance', invEntry.alliance_id, invEntry.alliance_name );
+  var rightUpperCell = zKillLink( 'corporation', invEntry.corporation_id, idToName.get(invEntry.corporation_id) );
+  var rightLowerCell = zKillLink( 'alliance', invEntry.alliance_id, idToName.get(invEntry.alliance_id) );
 
   var cellData   = TableData( 'view-involvedIcon ' + cellClass, invEntry.victim ? zKillLink( 'kill', invEntry.killmail_id, imageLink ) : imageLink );
   cellData      += TableData( 'teamText ' + cellClass, Bold( leftUpperCell )  + '<br>' + leftLowerCell );
@@ -1596,13 +1590,9 @@ function generateKillMailCell( cellClass, invEntry, nonTeamLosses )
   return cellData;
 }
 
-function generateBattleTimeline( target )
+function generateBattleTimeline( target, idToName )
 {
-  var involved = [];
-  _.each( gTeams, function( )
-  {
-    involved.push( [] );
-  } );
+  var involved = gTeams.map(() => []);
 
   gData.sort( function( lhs, rhs )
   {
@@ -1626,8 +1616,7 @@ function generateBattleTimeline( target )
     html.push( '<th colspan=2 align="center">Pilot/Ship</th><th align="center">Alliance/Corp</th>' );
   }
   html.push( '</thead>' );
-  _.each( dataByTime, function( event )
-  {
+  _.each(dataByTime, event => {
     assert( event[ 0 ] != undefined );
     assert( event[ 0 ].killmail_time != undefined );
     // extract time portion of the killmail_time and remove the seconds portion
@@ -1652,7 +1641,7 @@ function generateBattleTimeline( target )
           var data = teamRecord[ index ];
           found = true;
           var invEntry = initInvolvedEntry( data.victim );
-          invEntry.playerName = data.victim.characterName;
+          invEntry.playerName = idToName.get(data.victim.character_id);
           invEntry.playerID = data.victim.character_id;
           invEntry.killmail_id = data.killmail_id;
           invEntry.victim = true;
@@ -1662,7 +1651,7 @@ function generateBattleTimeline( target )
           {
             invEntry.shipData = _.find( gShipTypes, function( X ) { return X.I == 0; } );
           }
-          cellData = generateKillMailCell( timeRowClass + ' ' + cellClass, invEntry, undefined );
+          cellData = generateKillMailCell( timeRowClass + ' ' + cellClass, invEntry, undefined, idToName );
         }
         htmlBlock.push( cellData );
       }
@@ -1680,141 +1669,3 @@ function generateBattleTimeline( target )
   $( target ).empty( );
   $( target ).append( html.join( '' ));
 }
-
-function oldFunction()
-  {
-  // main window
-  html.push( '<table class="view-involved"><tr class="view-involved">' );
-  // For each team
-  _.each( involved, function( team, teamIdx )
-  {
-    // init vars
-    var iskLost = 0;
-    var counter = 0;
-    var lastType = 0;
-    var lastClass = '';
-    
-    // Start team window
-    html.push( '<td>' );
-    html.push( '<table>' );
-     // Isk header
-    html.push( '<tr>' );
-    html.push( '<div class="animIsk" id="team'+ teamIdx +'isk"></div>' );
-    html.push( '</tr>' );
-    // block start
-    html.push( '<tr>' );
-    // For each ship icon in team
-    _.each( team, function( invEntry, invIndex )
-    {
-      var id = 'p'+invIndex+'-'+teamIdx;
-      // Block label
-      if(gAnimationLabel && !gShowKillsOnly){
-        if(lastType == 0 && gAnimationGroup == 'Type'){
-          html.push( '<td colspan="10">'+invEntry.shipData.N+'</td></tr><tr>' );
-        }
-        if(lastClass == '' && gAnimationGroup == 'Class'){
-          html.push( '<td colspan="10">'+getShipClass(invEntry.shipData.I)+'</td></tr><tr>' );
-        }
-      }
-      
-      // If grouping by type, and this type is different from the last type
-      if(lastType != invEntry.shipData.O && lastType != 0 && gAnimationGroup == 'Type'){
-         // if labels on and kills filter off
-         if(gAnimationLabel&& !gShowKillsOnly){
-           // add type label and add new row
-           html.push( '</tr><tr><td colspan="10">'+invEntry.shipData.N+'</td></tr><tr>' );
-         }
-         else{
-           // add new row
-           html.push( '</tr><tr>' );
-         }
-         // reset ship icon count for this row
-         counter = 0;
-      }
-      
-      // If grouping by class, and this class is different from the last class 
-      if(lastClass != getShipClass(invEntry.shipData.I) && lastClass != '' && gAnimationGroup == 'Class'){
-         // if labels on and kills filter off
-         if(gAnimationLabel && !gShowKillsOnly){
-           // add class label and add new row
-           html.push( '</tr><tr><td colspan="10">'+getShipClass(invEntry.shipData.I)+'</td></tr><tr>' );
-         }
-         else{
-           // add new row
-           html.push( '</tr><tr>' );
-         }
-         // reset ship icon count for this row
-         counter = 0;
-      }
-      
-      // If row of icons is bigger than width then add new row
-      if(counter > gAnimationWidth-1){
-         // add new row
-         html.push( '</tr><tr>' );
-         // reset ship icon count for this row
-         counter = 0;
-      }
-      
-      // calculate offset times
-      var thisTime = new Date(invEntry.time);
-      var offsetTime = new Date( Date.parse(minDateTime) + (60000*gAnimationOffset) );
-      // generate title text for ship icon
-      var titleText = invEntry.playerName + ' [' + invEntry.corporation_name + '] ' + invEntry.shipData.N + ': ' + invEntry.kills + ' kills';
-      
-      // if this ship icon is a victim
-      if(invEntry.victim){
-        // find the kill in gData
-        var killDetails = _.find(gData, function(kill){ return kill.killmail_id == invEntry.killmail_id;});
-        // if thistime is before or equal to offset time
-        if (thisTime <= offsetTime){
-           // add isk lost to iskLost total
-          iskLost += killDetails.zkb.totalValue;
-          // add index to diedSoFar array
-          diedSoFar.push('p'+invIndex+'-'+teamIdx);
-
-          // For each attacker on this kill
-          _.each(invEntry.attackers, function(attacker){
-            // add to attackersSoFar array
-            attackersSoFar.push(attacker[0]);
-            // If difference between thistime and offset is less than 60 seconds, multiplied by the animation speed
-            if(offsetTime-thisTime < (60000*gAnimationSpeed)){
-              // add to attackersThisFrame array
-              attackersThisFrame.push(attacker[0]);
-            }
-          });
-        }
-         // if thistime is before or equal to offset time and kills filter is off
-        if(thisTime <= offsetTime || !gShowKillsOnly){
-          // build ship icon html
-          html = html.concat( buildShipIcon(id, teamIdx, invEntry.shipData.I, titleText) );
-          // increment ship icon count for this row
-          counter++;
-        }
-      }
-      // if this ship icon is NOT a victim and kills filter is off
-      else if(!gShowKillsOnly){
-        // build ship icon html
-        html = html.concat( buildShipIcon(id, teamIdx, invEntry.shipData.I, titleText) );
-        // increment ship icon count for this row
-        counter++;
-      }
-      // store the type and class of this ship icon
-      lastType = invEntry.shipData.O;
-      lastClass = getShipClass(invEntry.shipData.I);
-   
-    });
-    // end of each ship icon loop
-    
-    // close tags
-    html.push( '</tr>' );
-    html.push( '  </table>' );
-    html.push( '</td>' );
-    // add iskLost to iskLostTeam array
-    iskLostTeam.push(iskLost);
-  });
-  // End of team loop
-  // close tags
-  html.push( '</tr></table>' );
-  
-}
-
