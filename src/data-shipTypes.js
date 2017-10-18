@@ -1,6 +1,12 @@
 function initShipTypes( )
 {
   var data = [ '[',
+
+///////////////////////////////////////////////////////////// faction dreads  //////////////////////////////////////
+'{"I": 42124,  "N": "Vehement",                                     "G": "Dreadnought",                 "O": 75 },',
+'{"I": 42243,  "N": "Chemosh",                                      "G": "Dreadnought",                 "O": 76 },',
+///////////////////////////////////////////////////////////// faction faxes  //////////////////////////////////////
+'{"I": 42242,  "N": "Dagon",                                        "G": "Force Auxiliary",             "O": 77 },',
 ///////////////////////////////////////////////////////////// titans /////////////////////////////////////////////////
 '{"I": 11567,  "N": "Avatar",                                       "G": "Titan",                      "O": 101 },',
 '{"I": 3764,   "N": "Leviathan",                                    "G": "Titan",                      "O": 103 },',
@@ -20,8 +26,6 @@ function initShipTypes( )
 '{"I": 19726,  "N": "Phoenix",                                      "G": "Dreadnought",                "O": 302 },',
 '{"I": 19724,  "N": "Moros",                                        "G": "Dreadnought",                "O": 303 },',
 '{"I": 19722,  "N": "Naglfar",                                      "G": "Dreadnought",                "O": 304 },',
-///////////////////////////////////////////////////////////// faction dreads  //////////////////////////////////////
-'{"I": 42124,  "N": "Vehement",                                     "G": "Dreadnought",                "O": 305 },',
 
 ///////////////////////////////////////////////////////////// rorqual  /////////////////////////////////////////////////
 '{"I": 28352,  "N": "Rorqual",                                      "G": "Capital Industrial Ship",    "O": 400 },',
@@ -833,6 +837,7 @@ function initShipTypes( )
 '{"I": 12240, "N": "Medium Storage Array",                          "G": "Mobile Storage",             "O": 50004 },',
 '{"I": 33149, "N": "Personal Hangar Array",                         "G": "Personal Hangar",            "O": 50005 },',
 '{"I": 33475, "N": "Mobile Tractor Unit",                           "G": "Mobile Tractor Unit",        "O": 50006 },',
+'{"I": 33700, "N": "\'Packrat\' Mobile Tractor Unit",               "G": "Mobile Tractor Unit",        "O": 50007 },',
 
 // mobile siphons
 '{"I": 33477, "N": "Small Mobile Siphon Unit",                      "G": "Mobile Siphon Unit",         "O": 50101 },',
