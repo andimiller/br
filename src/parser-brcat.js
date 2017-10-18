@@ -537,7 +537,7 @@ function MakeSpan( val )
   return '<span class="ui-state-default ui-state-error ui-corner-all ux-summaryBox">' + val + '</span>';
 }
 
-function generateSummary( startTime, endTime, lastKillTime, workingFlag )
+function generateSummary( startTime, endTime, lastKillTime, workingFlag, idToName )
 {
   summaryIskLost = roundIsk( gSummaryIskLost );
 
@@ -546,13 +546,13 @@ function generateSummary( startTime, endTime, lastKillTime, workingFlag )
     outputText += ' so far';
   else
   {
-    addTab( 10,  'Involved',       'involvedTable',     function( ) { generateInvolved(); } );
+    addTab( 10,  'Involved',       'involvedTable',     function( ) { generateInvolved(idToName); } );
     addTab( 20,  'Class Summary',  'classSummaryTable', function( ) { draw_class_summary_table( '#classSummaryTable' ); } );
     addTab( 30,  'Ship Summary',   'summaryTable',      function( ) { draw_summary_table( '#summaryTable',gTeams ); } );
-    addTab( 40,  'Timeline',       'timeLine',          function( ) { generateBattleTimeline( '#timeLine' ); } );
+    addTab( 40,  'Timeline',       'timeLine',          function( ) { generateBattleTimeline( '#timeLine', idToName ); } );
     addTab( 50,  'Replay',       'animTab',          function( ) { generateAnimation( '#animTab' ); } );
     addTab( 400, 'Chart',          'chartTab',          function( ) { draw_charts(); } );
-    addTab( 500, 'Kill List',      'ktl',               function( ) { draw_kill_table(); } );
+    addTab( 500, 'Kill List',      'ktl',               function( ) { draw_kill_table(idToName); } );
   }
   outputText    += ': '          + MakeSpan( summaryIskLost );
   outputText    += ' Players: '  + MakeSpan( gPlayers.length );

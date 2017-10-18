@@ -100,7 +100,7 @@ async function startParsing( )
   {
     $('#status').text( 'Compiling pilot statistics...' );
     // generate our final summary line
-    generateSummary( 0, 0, 0, false );
+    generateSummary( 0, 0, 0, false, idToName );
     //gData = _.sortBy( gData, function( killRecord ) { return killRecord.killmail_time; } );
     //gData = killmails;
 
