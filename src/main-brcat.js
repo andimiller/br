@@ -58,6 +58,7 @@ var gActiveChartType = 'column';
 var gCurrentTeams = [];
 var gDataSets = [];
 
+var gLoadUrl = false;
 var gLoadTeams = [];
 var gEntryWindowData = [];
 var gTasks = 0;
@@ -210,11 +211,11 @@ function on_page_ready( )
   addTab( 990, 'Options',        'options',           function( ) { generateOptionsTab( '#options' ); } );
   addTab( 999, 'Help & Info',    'infoTable',         function( ) { $('#infoTable').html( helpTxt ); } );
   $( '#tabs' ).tabs( { active: 1 } );
-  // always load anyway
-  //if ( gLoadTeams.length > 0 )
-  //{
-  setTimeout( function( ) { startParsing( ); }, 200 );
-  //}
+  // load if we had enough arguments in the URL to cause loading
+  if (gLoadUrl)
+  {
+    setTimeout( function( ) { startParsing( ); }, 200 );
+  }
   $( window ).resize(function() {
     refresh();
   });
@@ -287,16 +288,21 @@ function processUrlParameters( )
   gUrlParams = parse_url_params( window.location.href );
   gEntryWindowData = [];
 
+  gLoadUrl = ('s' in gUrlParams) && ('b' in gUrlParams) && ('e' in gUrlParams);
+
   if ( gUrlParams[ 's' ] != undefined )
   {
+    console.log("s wasn't undefined");
     var params = 0;
 
     var systemParams = gUrlParams[ 's' ].split( SHARELINK_TOKEN );
     var startParams  = gUrlParams[ 'b' ].split( SHARELINK_TOKEN );
     var endParams    = gUrlParams[ 'e' ].split( SHARELINK_TOKEN );
 
+
     _.each( systemParams, function( system, index )
     {
+      // we know we've got stuff to load
       // convert real systemids down to this format
       if (system > 10000000) {
         system = system - 30000000;
