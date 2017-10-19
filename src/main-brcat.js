@@ -210,10 +210,11 @@ function on_page_ready( )
   addTab( 990, 'Options',        'options',           function( ) { generateOptionsTab( '#options' ); } );
   addTab( 999, 'Help & Info',    'infoTable',         function( ) { $('#infoTable').html( helpTxt ); } );
   $( '#tabs' ).tabs( { active: 1 } );
-  if ( gLoadTeams.length > 0 )
-  {
-    setTimeout( function( ) { startParsing( ); }, 200 );
-  }
+  // always load anyway
+  //if ( gLoadTeams.length > 0 )
+  //{
+  setTimeout( function( ) { startParsing( ); }, 200 );
+  //}
   $( window ).resize(function() {
     refresh();
   });
