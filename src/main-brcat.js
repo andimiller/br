@@ -295,11 +295,16 @@ function processUrlParameters( )
 
     _.each( systemParams, function( system, index )
     {
+      // convert real systemids down to this format
+      if (system > 10000000) {
+        system = system - 30000000;
+      }
       var entryWindow = new Object;
       var end   = endParams[ Math.min( endParams.length - 1, index ) ];
       var start = startParams[ Math.min( startParams.length - 1, index ) ];
 
-      if (start<10000000) {
+      // load weird EVE epochs, or normal unixtimes
+      if (start < 10000000) {
         entryWindow.startTime = parseInt(start) * MS_PER_MINUTE + EVE_EPOCH;
       } else {
         entryWindow.startTime = parseInt(start) * MS_PER_MINUTE;
