@@ -299,7 +299,11 @@ function processUrlParameters( )
       var end   = endParams[ Math.min( endParams.length - 1, index ) ];
       var start = startParams[ Math.min( startParams.length - 1, index ) ];
 
-      entryWindow.startTime = parseInt( start ) * MS_PER_MINUTE + EVE_EPOCH;
+      if (start<10000000) {
+        entryWindow.startTime = parseInt(start) * MS_PER_MINUTE + EVE_EPOCH;
+      } else {
+        entryWindow.startTime = parseInt(start) * MS_PER_MINUTE;
+      }
       entryWindow.endTime = parseInt( end ) * MS_PER_MINUTE + entryWindow.startTime;
       entryWindow.system = solarSystemIDtoName( parseInt( system ) + SOLAR_SYSTEM_INDEX_OFFSET );
       gEntryWindowData.push( entryWindow );
