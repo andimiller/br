@@ -27,6 +27,7 @@ var COOKIE_BLUETEAMS = 'blueTeams';
 var COOKIE_BLUETEAMS_TOKEN = '|';
 var DAYS_PER_YEAR = 365;
 var MS_PER_MINUTE = 1000 * 60;
+var MS_PER_SECOND = 1000;
 var EVE_EPOCH = Date.UTC( 2003, 0, 1 );
 
 var gValidateFlag = false;
@@ -307,7 +308,7 @@ function processUrlParameters( )
       if (start < 10000000) {
         entryWindow.startTime = parseInt(start) * MS_PER_MINUTE + EVE_EPOCH;
       } else {
-        entryWindow.startTime = parseInt(start) * MS_PER_MINUTE;
+        entryWindow.startTime = parseInt(start) * MS_PER_SECOND;
       }
       entryWindow.endTime = parseInt( end ) * MS_PER_MINUTE + entryWindow.startTime;
       entryWindow.system = solarSystemIDtoName( parseInt( system ) + SOLAR_SYSTEM_INDEX_OFFSET );
