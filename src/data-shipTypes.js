@@ -858,7 +858,7 @@ function initShipTypes( )
 
 ///////////////////////////////////////////////////////////// heavy fighters /////////////////////////////////////////
 '{"I": 40362, "N": "Ametat I",                                          "G": "Heavy Fighter",           "O": 30026 },',
-'{"I": 40560, "N": "Ametat II"                                          "G": "Heavy Fighter",           "O": 30027 },',
+'{"I": 40560, "N": "Ametat II",                                         "G": "Heavy Fighter",           "O": 30027 },',
 '{"I": 40364, "N": "Antaeus I",                                         "G": "Heavy Fighter",           "O": 30028 },',
 '{"I": 40562, "N": "Anteus II",                                         "G": "Heavy Fighter",           "O": 30029 },',
 '{"I": 32325, "N": "Cyclops I",                                         "G": "Heavy Fighter",           "O": 30030 },',
