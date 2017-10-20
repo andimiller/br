@@ -1574,7 +1574,7 @@ function generateKillMailCell( cellClass, invEntry, nonTeamLosses, idToName )
 {
   var imageLink      = eveImageLink( 'Render', invEntry.shipData.I );
   var leftUpperCell  = zKillLink( 'character', invEntry.playerID, invEntry.playerName ) + ' ' + ( invEntry.podKillID == 0 ? '' : zKillLink( 'detail', invEntry.podKillID, '[Pod]' ));
-  if (invEntry.playerID === undefiend) {
+  if (invEntry.playerID === undefined) {
     leftUpperCell  = zKillLink( 'corporation', invEntry.corporation_id, idToName.get(invEntry.corporation_id) );
   }
   var leftLowerCell  = invEntry.shipData.N;
