@@ -553,9 +553,13 @@ function initShipTypes( )
 '{"I": 35832, "N": "Astrahus",                                      "G": "Citadel",                    "O": 54 },',
 
 // ECs
-'{"I": 35826, "N": "Azbel",                                         "G": "Engineering Complex",        "O": 55 },',
+'{"I": 35827, "N": "Sotiyo",                                        "G": "Engineering Complex",        "O": 55 },',
 '{"I": 35825, "N": "Raitaru",                                       "G": "Engineering Complex",        "O": 56 },',
-'{"I": 35827, "N": "Sotiyo",                                        "G": "Engineering Complex",        "O": 57 },',
+'{"I": 35826, "N": "Azbel",                                         "G": "Engineering Complex",        "O": 57 },',
+
+// Refineries
+'{"I": 35836, "N": "Tatara",                                        "G": "Refinery",                   "O": 58 },',
+'{"I": 35835, "N": "Athanor",                                       "G": "Refinery",                   "O": 59 },',
 
 // TCUs
 '{"I": 32300, "N": "QA Territorial Claim Unit",                     "G": "SOV Structure",              "O": 10000 },',
