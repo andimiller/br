@@ -159,7 +159,7 @@ function draw_kill_chart( chartDataName, title, yAxisLabelText, target, unit)
   var chartData = generateKillChartData( chartDataName );
   var interval = chartData.pop();
   var seriesData = [];
-  for( i = 1; i < chartData.length; ++i )
+  for(var i = 1; i < chartData.length; ++i )
   {
     //seriesData.push(['Team'+i,chartData[i]]);
     seriesData.push({name: 'Team ' + i, data: chartData[ i ]});
@@ -257,8 +257,7 @@ function generateKillChartData(typeOfChart)
   if(killTimespan>600){interval = 10;}
   if(killTimespan>1440){interval = 60;}
 
-  var i=0;
-  for (i=0; i<killTimespan; i+=interval)
+  for (var i=0; i<killTimespan; i+=interval)
   {
     var timeStamp = new Date(firstKill.getTime()+( i * MS_PER_MINUTE ));
     xAxis.push(format_time_for_chart_label(timeStamp));
