@@ -1,6 +1,6 @@
 var gCalculatedInvolved = [];
 var gAttackersThisFrame = [];
-var DiedSoFar = [];
+var gDiedSoFar = [];
 var gDiedThisFrame = [];
 
 
