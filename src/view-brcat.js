@@ -1,5 +1,8 @@
 var gCalculatedInvolved = [];
 var gAttackersThisFrame = [];
+var DiedSoFar = [];
+var gDiedThisFrame = [];
+
 
 function generateTable( headerData, rowData, id , colspan )
 {
@@ -1416,7 +1419,7 @@ function subGenerateAnimation( target, involved )
   diedThisFrame = _.uniq(diedThisFrame);
   
   gAttackersThisFrame = attackersThisFrame;
-  gAttackersSoFar = attackersSoFar;
+  var gAttackersSoFar = attackersSoFar;
   gDiedSoFar = diedSoFar;
   gDiedThisFrame = diedThisFrame;
   
