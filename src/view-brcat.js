@@ -869,7 +869,7 @@ function getAttackersAndShip(killmail_id)
 
 function buildMainWindow(involved)
 {
-  html = [];
+  var html = [];
   html.push( '<table class="view-involved"><tr class="view-involved">' );
   _.each(involved, function(team, teamIDX){
     html = html.concat( buildTeamHeading(team, teamIDX) );
@@ -881,7 +881,7 @@ function buildMainWindow(involved)
 
 function buildTeamHeading(team, teamIDX)
 {
-  html = [];
+  var html = [];
   // Start team window
   html.push( '<td>' );
   html.push( '<table>' );
@@ -950,7 +950,7 @@ function buildTeamHeading(team, teamIDX)
 
 function buildBlock(block, teamIDX)
 {
-  html = [];
+  var html = [];
   html = html.concat( buildBlockHeading(block));
   html = html.concat( buildBlockBody(block, teamIDX) );
   return html;
@@ -958,7 +958,7 @@ function buildBlock(block, teamIDX)
 
 function buildBlockHeading(block)
 {
-  html = [];
+  var html = [];
   if(gAnimationLabel){
     var iskLost = 0;
     var blockLoss = 0;
@@ -995,7 +995,7 @@ function buildBlockHeading(block)
 
 function buildBlockBody(block,teamIDX)
 {
-  html = [];
+  var html = [];
   html.push( '<table>' );
   html.push( '<tr>' );
   var counter = 0;
