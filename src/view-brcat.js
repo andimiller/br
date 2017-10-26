@@ -766,7 +766,7 @@ function  setRIDtext(teamIDX,invIndex)
 
 function buildInfoDiv()
 {
-  html = [];
+  var html = [];
   html.push('<div id="replayInfoDiv" class="absolute">');
   html.push('<table style="background-color: black;">');
   html.push('<tr><td>Name:</td><td><div id="RIDname"></div></td><td>Corp:</td><td><div id="RIDcorp"></div></td><td style="text-align: right;"><img src="./close.png" id="closeButton" onclick="closeRIDbox()"></td></tr>' );
