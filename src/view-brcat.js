@@ -1587,7 +1587,7 @@ function generateKillMailCell( cellClass, invEntry, nonTeamLosses, idToName )
   {
     assert(( nonTeamLosses != 0 ) || ( invEntry.kills != 0 ));
     var percentage = ( nonTeamLosses == 0 ? 0 : Math.round( invEntry.kills / nonTeamLosses * 1000 ) / 10 );
-    cellData    += TableData( 'teamText ' + cellClass + ' view-rightAlign' , 'N° ' + invEntry.kills + '<br>' + percentage.toFixed( 1 ) + '%' );
+    cellData    += TableData( 'teamText ' + cellClass + ' view-rightAlign' , 'N&deg; ' + invEntry.kills + '<br>' + percentage.toFixed( 1 ) + '%' );
   }
   cellData      += TableData( 'teamText ' + cellClass, Bold( rightUpperCell ) + '<br>' + rightLowerCell );
   return cellData;
