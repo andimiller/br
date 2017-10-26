@@ -107,7 +107,7 @@ async function startParsing( )
     var elapsed = ( new Date( )).getTime( ) - gProcessingTime.getTime( );
     console.log( 'processing time: ' + elapsed + ' ms' );
 
-    build_data( );
+    build_data( idToName );
     $('#status').text( 'Ready for team selection.' );
     if ( gSpinner != undefined )
     {
@@ -233,16 +233,6 @@ function updateShareLink( )
   $( '#ux-shareLink' ).val( base + param.join( '&' ));
 }
 
-function add_team( )
-{
-  removeTeamTabs( );
-  var team = [];
-  gTeams.push( team );
-  addTeamTabs( );
-  flagInvolvedRefresh = true;
-  refresh( );
-}
-
 function remove_team( )
 {
   var oldTeam = gTeams.length - 1;
@@ -354,13 +344,13 @@ function drawTabs()
   $( "#tabs" ).append( ulText + divText );
 }
 
-function addTeamTabs( )
+function addTeamTabs(idToName)
 {
   // TODO: investigate not calling remove first
   removeTeamTabs( );
   _.each( gTeams, function( team, index )
   {
-    addTab(( index + STARTING_TEAM_TAB ),'Team ' + ( index + 1 ), 'teamSummary' + index, function( ) { draw_team_kill_table( index ); } );
+    addTab(( index + STARTING_TEAM_TAB ),'Team ' + ( index + 1 ), 'teamSummary' + index, function( ) { draw_team_kill_table( index, idToName ); } );
   } );
   
 }
@@ -395,7 +385,7 @@ function sort_teams( )
   return gTeams;
 }
 
-function assign_team( newTeam, groupIdx )
+function assign_team( newTeam, groupIdx, idToName )
 {
   $( '#status' ).text( 'Moving ' + gGroups[ groupIdx ].name + ' to ' + TEAM_COLORS[ newTeam ] );
   waitCursor( true );

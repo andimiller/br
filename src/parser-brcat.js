@@ -67,7 +67,7 @@ function cleaniskData(){
   } );
 }
 
-function build_data( )
+function build_data( idToName )
 {
   
   cleaniskData();
@@ -122,7 +122,7 @@ function build_data( )
   
   parseGroupData( gData );
   
-  build_teams( gGroups );
+  build_teams( gGroups, idToName );
   
   // Isk calcs
 
@@ -436,7 +436,7 @@ function addGroupShip ({ ship_type_id }, group) {
   }) - 1];
 }
 
-function build_teams( groups )
+function build_teams( groups, idToName )
 {
   gTeams = [ [],[] ];
   _.each( groups, function( group, index )
@@ -487,7 +487,7 @@ function build_teams( groups )
       group.team = team;
     }
   } );
-  addTeamTabs( );
+  addTeamTabs(idToName);
 }
 
 
