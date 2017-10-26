@@ -140,7 +140,7 @@ function on_page_ready( )
   generateEntryUIFromData( );
   
   $( '#tabs' ).tabs( { heightStyle: 'fill' } );
-  helpTxt =  '<div id="ux-helpInfo" class="ux-helpContent">';
+  var helpTxt =  '<div id="ux-helpInfo" class="ux-helpContent">';
   helpTxt +='<b>Battle Report Generator</b>';
   helpTxt +='<br>version 0.40-pizza - 11th October 2017';
   helpTxt +='<br>This version was updated to use ESI by Lucia Denniard, with performance fixes from robbilie please evemail Lucia any complaints, or bother me on discord/slack, see original release notes below.';
