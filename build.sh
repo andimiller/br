@@ -12,6 +12,6 @@ git add VERSION
 git commit -m "bump to ${version} for release"
 git push
 echo "building docker image"
-docker build . -tag andimiller/br:${version}
+docker build . -t andimiller/br:${version}
 echo "pushing docker image"
 docker push andimiller/br:${version}
