@@ -2,8 +2,9 @@
 
 echo "installing babel-cli"
 npm install --save-dev babel-cli
+npm install --save-dev babel-plugin-transform-async-functions
 echo "building js"
-./node_modules/.bin/babel src --out-dir dst
+./node_modules/.bin/babel src --out-dir dst --plugins transform-async-functions
 echo "bumping version number"
 sed -i -r 's/(.*)\.([0-9]+)$/echo "\1.$((\2+1))"/ge' VERSION
 version=`cat VERSION` 
