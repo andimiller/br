@@ -1,4 +1,5 @@
 var gCalculatedInvolved = [];
+var gAttackersThisFrame = [];
 
 function generateTable( headerData, rowData, id , colspan )
 {
