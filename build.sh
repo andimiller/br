@@ -2,7 +2,6 @@
 
 echo "installing babel-cli"
 npm install --save-dev babel-cli
-npm install --save-dev babel-plugin-transform-async-functions
 npm install --save-dev babel-plugin-syntax-async-functions
 echo "building js"
 ./node_modules/.bin/babel src --out-dir dst --plugins syntax-async-functions transform-async-functions
