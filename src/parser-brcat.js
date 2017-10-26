@@ -339,13 +339,10 @@ function addship( player, playerIndex )
 
 function checkGroupExists( player )
 {
+  var groupID = player.corporation_id;
   if(!!player.alliance_id)
   {
-    groupID = player.alliance_id;
-  }
-  else
-  {
-    groupID = player.corporation_id;
+    var groupID = player.alliance_id;
   }
   var foundGroup = _.find( gGroups, function( testGroup ) { return groupID == testGroup.ID } );
   if( foundGroup != undefined )
