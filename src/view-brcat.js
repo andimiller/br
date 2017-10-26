@@ -1,3 +1,5 @@
+var gCalculatedInvolved = [];
+
 function generateTable( headerData, rowData, id , colspan )
 {
   if( colspan == undefined )
