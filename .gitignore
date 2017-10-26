@@ -1,0 +1,4 @@
+node_modules/
+dst/*.js
+dst/lib/
+dst/lib/*.js
