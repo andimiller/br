@@ -539,7 +539,7 @@ function MakeSpan( val )
 
 function generateSummary( startTime, endTime, lastKillTime, workingFlag, idToName )
 {
-  summaryIskLost = roundIsk( gSummaryIskLost );
+  var summaryIskLost = roundIsk( gSummaryIskLost );
 
   var outputText = 'Total lost';
   if ( workingFlag )
