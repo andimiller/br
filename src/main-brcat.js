@@ -285,7 +285,7 @@ function updateEntryDataFromUI( )
 
 function processUrlParameters( )
 {
-  gUrlParams = parse_url_params( window.location.href );
+  var gUrlParams = parse_url_params( window.location.href );
   gEntryWindowData = [];
 
   gLoadUrl = ('s' in gUrlParams) && ('b' in gUrlParams) && ('e' in gUrlParams);
