@@ -1013,7 +1013,7 @@ function buildBlockBody(block,teamIDX)
          counter = 0;
     }
     var id = 'p'+blockShip.index+'-'+ teamIDX;
-    titleText = blockShip.playerName 
+    var titleText = blockShip.playerName 
               + ' [' 
               + blockShip.corporation_name 
               + '] ' 
