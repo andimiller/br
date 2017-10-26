@@ -257,7 +257,8 @@ function generateKillChartData(typeOfChart)
   if(killTimespan>600){interval = 10;}
   if(killTimespan>1440){interval = 60;}
 
-  for (var i=0; i<killTimespan; i+=interval)
+  var i=0;
+  for (i=0; i<killTimespan; i+=interval)
   {
     var timeStamp = new Date(firstKill.getTime()+( i * MS_PER_MINUTE ));
     xAxis.push(format_time_for_chart_label(timeStamp));
