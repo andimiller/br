@@ -143,7 +143,7 @@ function on_page_ready( )
   var helpTxt =  '<div id="ux-helpInfo" class="ux-helpContent">';
   helpTxt +='<b>Battle Report Generator</b>';
   helpTxt +='<br>version {{VERSION}}';
-  helpTxt +='<br>This version was updated to use ESI by Lucia Denniard, with performance fixes from robbilie please evemail Lucia any complaints, or bother me on discord/slack, see original release notes below.';
+  helpTxt +='<br>This version was updated to use ESI by Lucia Denniard, with performance fixes from robbilie please file bugs here <a href="https://github.com/andimiller/br/issues">https://github.com/andimiller/br/issues</a>, or bother me on discord/slack, see original release notes below.';
   helpTxt += '<br>';
   helpTxt +='<br>version 0.1.306 - 17th December 2016';
   helpTxt +='<br>';
