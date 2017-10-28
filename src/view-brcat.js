@@ -4,6 +4,22 @@ var gDiedSoFar = [];
 var gDiedThisFrame = [];
 
 
+function addIskSorter() {
+  id: 'isk',
+  is: function(s) { return false; },
+  format: function(s) {
+    var i = parseFloat(s);
+    var unit = s.substring(-1);
+    if (unit == "k") { return i * 1000 };
+    if (unit == "m") { return i * 1000000 };
+    if (unit == "b") { return i * 1000000000 };
+    if (unit == "t") { return i * 1000000000000 };
+    return i;
+  },
+  type: 'numeric'
+}
+addIskSorter();
+
 function generateTable( headerData, rowData, id , colspan )
 {
   if( colspan == undefined )
@@ -120,7 +136,7 @@ function draw_team_kill_table( index, idToName )
     var output = generateTable( headerData, rowDataAllTeams[ index ], target + 'Table' );
     $( '#'+target ).empty( );
     $( '#'+target ).append( output );
-    $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]] } );
+    $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]], headers: { 10: sorter: 'isk'; } );
   }
 }
 
@@ -301,7 +317,7 @@ function draw_kill_table(idToName)
   var output = generateTable(headerData, combinedRowData, target+'Table');
   $( '#'+target ).empty( );
   $( '#'+target ).append( output );
-  $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]] } );
+  $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]], headers: { 10: sorter: 'isk'; } } );
 }
 
 // takes a team index ( used to determine the text color ), a numeric condition, and some content.
