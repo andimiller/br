@@ -20,7 +20,6 @@ function addIskSorter() {
     type: 'numeric'
   });
 }
-addIskSorter();
 
 function generateTable( headerData, rowData, id , colspan )
 {
@@ -128,6 +127,7 @@ function buildKillTable( idToName )
 
 function draw_team_kill_table( index, idToName )
 {
+  addIskSorter();
   var rowDataAllTeams =  buildKillTable( idToName );
   var headerData = rowDataAllTeams.pop( );
   var team = gTeams[ index ];
@@ -312,6 +312,7 @@ function draw_localStorageTable()
 
 function draw_kill_table(idToName)
 {
+  addIskSorter();
   var rowDataAllTeams =  buildKillTable( idToName );
   var headerData = rowDataAllTeams.pop( );
   var combinedRowData = [].concat(...rowDataAllTeams);
