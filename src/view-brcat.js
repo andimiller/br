@@ -5,18 +5,20 @@ var gDiedThisFrame = [];
 
 
 function addIskSorter() {
-  id: 'isk',
-  is: function(s) { return false; },
-  format: function(s) {
-    var i = parseFloat(s);
-    var unit = s.substring(-1);
-    if (unit == "k") { return i * 1000 };
-    if (unit == "m") { return i * 1000000 };
-    if (unit == "b") { return i * 1000000000 };
-    if (unit == "t") { return i * 1000000000000 };
-    return i;
-  },
-  type: 'numeric'
+  $.tablesorter.addParser({
+    id: 'isk',
+    is: function(s) { return false; },
+    format: function(s) {
+      var i = parseFloat(s);
+      var unit = s.substring(-1);
+      if (unit == "k") { return i * 1000 };
+      if (unit == "m") { return i * 1000000 };
+      if (unit == "b") { return i * 1000000000 };
+      if (unit == "t") { return i * 1000000000000 };
+      return i;
+    },
+    type: 'numeric'
+  });
 }
 addIskSorter();
 
