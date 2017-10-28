@@ -138,7 +138,7 @@ function draw_team_kill_table( index, idToName )
     var output = generateTable( headerData, rowDataAllTeams[ index ], target + 'Table' );
     $( '#'+target ).empty( );
     $( '#'+target ).append( output );
-    $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]], headers: { 10: sorter: 'isk'; } );
+    $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]], headers: { 10: {sorter: 'isk' }}});
   }
 }
 
@@ -320,7 +320,7 @@ function draw_kill_table(idToName)
   var output = generateTable(headerData, combinedRowData, target+'Table');
   $( '#'+target ).empty( );
   $( '#'+target ).append( output );
-  $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]], headers: { 10: sorter: 'isk'; } } );
+  $( '#'+target+'Table').tablesorter({ sortList: [[8,1],[9,1]] , headers: { 10: { sorter: 'isk' } }});
 }
 
 // takes a team index ( used to determine the text color ), a numeric condition, and some content.
