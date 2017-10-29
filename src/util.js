@@ -214,7 +214,7 @@ function Italics( content )
 
 function zKillLink( service, value, text )
 {
-  return '<a href="https://zkillboard.com/' + service + '/' + value + '/">' + text + '</a>';
+  return service && value && text ? '<a href="https://zkillboard.com/' + service + '/' + value + '/">' + text + '</a>' : '';
 }
 
 function eveImageLink( service, id )
