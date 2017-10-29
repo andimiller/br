@@ -142,27 +142,17 @@ function draw_team_kill_table( index, idToName )
   }
 }
 
-function getIskSummary()
-{
-  var iskLostArray = [];
-  _.each(gTeams, function(team){
-    iskLostArray.push(0);
-  });
-  var shipsLostArray = [];
-  _.each(gTeams, function(team){
-    shipsLostArray.push(0);
-  });
+function getIskSummary() {
+  var iskLostArray = gTeams.map(team => 0);
+  var shipsLostArray = gTeams.map(team => 0);
   
-  
-  _.each(gGroups, function(group)
-  {
+  gGroups.forEach(group => {
     var targetTeam = getTeam( group.ID );
-    if(targetTeam != -1)
-    {   
-     iskLostArray[targetTeam] += Number(group.iskLost);
-     _.each(group.ships, function(ship){
+    if(targetTeam != -1) {
+      iskLostArray[targetTeam] += Number(group.iskLost);
+      group.ships.forEach(ship => {
         shipsLostArray[targetTeam] += Number(ship.lost);
-     });
+      });
     }
   });
   
