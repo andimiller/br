@@ -9,12 +9,16 @@ function loadEntryWindowData (entryWindow) {
 //////////////
 
 async function fetchPages (params, page = 1) {
+  $('#status').text( 'Reading data for ' + (params.type.name == "solarSystemID" ? solarSystemIDtoName(params.type.id) : params.type.name + ":" + params.type.id) + ' from ' + params.start + ' to ' + params.end + ', page # ' + (params.totalPages + page) + "-" + (params.totalPages + 10) );
+  return [].concat(...(await Promise.all(new Array(10).fill(0).map((x, i) => json(url(Object.assign(params, { page: i + 1 })))))));
+  /*
   const data = await json(url(Object.assign(params, { page })));
   $('#status').text( 'Reading data for ' + (params.type.name == "solarSystemID" ? solarSystemIDtoName(params.type.id) : params.type.name + ":" + params.type.id) + ' from ' + params.start + ' to ' + params.end + ', page #' + (params.totalPages + page) );
   if (page !== 10 && data.length === 200)
     return data.concat(await fetchPages(params, ++page));
   else
     return data;
+  */
 };
 
 const json = (...args) => fetch(...args).then(res => res.json());
