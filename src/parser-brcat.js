@@ -22,7 +22,7 @@ const json = (...args) => fetch(...args).then(res => res.json());
 const chunkedJson = (url, ids, size) => Promise.all(ids.chunk(size).map(chunk => json(url + chunk.join()))).then(chunks => [].concat(...chunks));
 
 async function loadKillmails (params, start = params.start, totalPages = 0) {
-  const data = await fetchPages(Object.assign(params, { start, totalPages }));
+  var data = await fetchPages(Object.assign(params, { start, totalPages }));
   data = data.filter(km => {
     const kmtime = Date.parse(km.killmail_time);
     return ((kmtime > params.realStart) && (kmtime < params.realEnd));
