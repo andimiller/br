@@ -1,7 +1,7 @@
 function loadEntryWindowData (entryWindow) {
   const name = entryWindow.system.toUpperCase();
   const id = gSolarSystems.find(solarsystem => solarsystem.N.toUpperCase() === name).I;
-  return loadKillmails({ type: { name: "solarSystemID", id }, start: createZkbDateStart( entryWindow.startTime ), end: createZkbDateEnd( entryWindow.endTime ) });
+  return loadKillmails({ type: { name: "solarSystemID", id }, start: createZkbDateStart( entryWindow.startTime ), end: createZkbDateEnd( entryWindow.endTime ), realStart: entryWindow.startTime, realEnd: entryWindow.endTime });
 }
 
 // /////////////////////////////////////// ZKillboard parsing ///////////////////////////////////////////
@@ -23,6 +23,10 @@ const chunkedJson = (url, ids, size) => Promise.all(ids.chunk(size).map(chunk =>
 
 async function loadKillmails (params, start = params.start, totalPages = 0) {
   const data = await fetchPages(Object.assign(params, { start, totalPages }));
+  data = data.filter(km => {
+    const kmtime = Date.parse(km.killmail_time);
+    return ((kmtime > params.realStart) && (kmtime < params.realEnd));
+  })
   if (data.length !== 0 && data.length === 200 * 10) {
     const lastKillmail = data[data.length - 1];
     const killmails = await loadKillmails(params, lastKillmail.killmail_time.replace(/:|-| |T/g,'').substring(0, 10) + "00", totalPages + 10);
