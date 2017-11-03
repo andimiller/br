@@ -137,7 +137,7 @@ function build_data( idToName )
   
   _.each( gData, function( killmail )
   {
-    const kmGroupID = killmail.victim.alliance.id || killmail.victim.corporation_id;
+    const kmGroupID = killmail.victim.alliance_id || killmail.victim.corporation_id;
     if( killmail.zkb != undefined )
     {
       _.each( gGroups, function( group )
