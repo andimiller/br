@@ -137,11 +137,12 @@ function build_data( idToName )
   
   _.each( gData, function( killmail )
   {
+    const kmGroupID = killmail.victim.alliance.id || killmail.victim.corporation_id;
     if( killmail.zkb != undefined )
     {
       _.each( gGroups, function( group )
       {
-        if( group.ID == killmail.victim.alliance_id || group.ID == killmail.victim.corporation_id )
+        if( group.ID == kmGroupID )
         {
           if(!isNaN(parseInt(killmail.zkb.totalValue,10))){
             group.iskLost += parseInt(killmail.zkb.totalValue,10);
