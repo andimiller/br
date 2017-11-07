@@ -65,7 +65,7 @@ async function startParsing( )
 
   const killmails = [].concat(...await Promise.all(gEntryWindowData.map(entryWindow => loadEntryWindowData(entryWindow))));
 
-  const structures = [].concat(...killmails.map(({ victim, attackers }) => [victim].concat(attackers))).filter(x => (!(x.character_id) && (x.corporation_id) && !(x.alliance_id)))
+  const structures = [].concat(...killmails.map(({ killmail_time, victim, attackers }) => [victim].concat(attackers).map(entity => [new Date(killmail_time), entity])).filter(([time, x]) => (!(x.character_id) && (x.corporation_id) && !(x.alliance_id))).reduce((s, [time, entity]) => s.add([time, entity])), new Set());
 
   const { characterIDs, corporationIDs, allianceIDs } = [].concat(...killmails.map(({ victim, attackers }) => [victim].concat(attackers))).reduce((p, { character_id, corporation_id, alliance_id }) => {
     if (character_id)
