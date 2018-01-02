@@ -234,7 +234,7 @@ function updateShareLink( )
   console.log( param.length + ': ' + param );
   $( '#ux-shareLink' ).val( base + param.join( '&' ));
   var currentState = history.state;
-  history.pushState(currentState, "EVE Kill Report Repair Tool", param.join('&'));
+  history.pushState(currentState, "EVE Kill Report Repair Tool", '?' + param.join('&'));
 }
 
 function remove_team( )
