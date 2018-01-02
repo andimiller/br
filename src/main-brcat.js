@@ -222,7 +222,10 @@ function on_page_ready( )
   });
   window.onpopstate = function(e) {
     processUrlParameters();
-    refresh();
+    if (gLoadUrl)
+    {
+      setTimeout( function( ) { startParsing( ); refresh(); }, 200 );
+    }
   };
 }
 
