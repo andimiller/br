@@ -220,6 +220,10 @@ function on_page_ready( )
   $( window ).resize(function() {
     refresh();
   });
+  window.onpopstate = function(e) {
+    processUrlParameters();
+    refresh();
+  };
 }
 
 function generateEntryUIFromData( )
