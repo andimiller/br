@@ -205,6 +205,9 @@ function updateShareLink( )
   if(!gOptIgnoreInsig){
     param.push( 'o=' + 1 );
   }
+  if(!gOptEstimateFighterValues) {
+    param.push( 'f=' + 1);
+  }
   //param.push( 'r=' + 1 );
   if(!gAnimationScale){
     param.push( 'rs=' + 1 );

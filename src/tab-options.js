@@ -10,6 +10,8 @@ var gOptIgnoreNPCs          = false;
 var gOptHideAvatars         = false;
 var gOptHideLogos           = false;
 
+var gOptEstimateFighterValues = true;
+
 function createCheckboxCell( name, text, checked )
 {
   return TableData( '', '<input type="checkbox" name="' + name + '" onchange="updateOptions( \''+ name +'\')"' + ( checked ? ' checked' : '' ) + '>' + text + '</input>' );
@@ -29,6 +31,8 @@ function generateOptionsTab( target )
   html.push( '</tr><tr>' );
   //html.push( createCheckboxCell( 'optNPCs', 'Ignore NPCs', gOptIgnoreNPCs ));
   html.push( createCheckboxCell( 'optInsig', 'Ignore insignificant corps/alliances', gOptIgnoreInsig ));
+  html.push( '</tr><tr>' );
+  html.push( createCheckboxCell( 'optFighterValues', 'Disable fighter value estimation', gOptEstimateFighterValues ));
   html.push( '</tr></table></form>' );
   $( target ).empty( );
   $( target ).append( html.join( '' ));
@@ -46,6 +50,18 @@ function updateOptions( option )
     }
     updateShareLink( );
     console.log('gOptIgnoreInsig:'+ gOptIgnoreInsig);
+  }
+  if(option == 'optFighterValues') {
+    if(gOptEstimateFighterValues){
+      gOptEstimateFighterValues = false;
+    }
+    else
+    {
+      gOptEstimateFighterValues = true;
+    }
+    updateShareLink( );
+    console.log('gOptEstimateFighterValues:'+ gOptEstimateFighterValues);
+    startParsing();
   }
 }
 

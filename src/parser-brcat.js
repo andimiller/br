@@ -166,9 +166,21 @@ function parseKillRecord(kill, idToName) {
   assert( kill != undefined );
   assert( kill.victim != undefined );
 
+  kill.value = function() {
+    if (!gOptEstimateFighterValues) { return kill.zkb.totalValue; };
+    let group = _.find( gShipTypes, function( X ) { return X.I == kill.victim.ship_type_id; } ).G;
+    let value = parseInt(this.zkb.totalValue, 10);
+    if (group == "Support Fighter")           { return value * 3; };
+    if (group == "Heavy Fighter")             { return value * 6; };
+    if (group == "Light Fighter")             { return value * 9; };
+    if (group == "Space Superiority Fighter") { return value * 12; };
+    return value;
+  };
+
   if(kill.zkb) {
-    if(!isNaN(parseInt(kill.zkb.totalValue,10))) {
-      gSummaryIskLost += parseInt(kill.zkb.totalValue, 10);
+    if(!isNaN(parseInt(kill.value(),10))) {
+      kill.zkb.totalValue = kill.value();
+      gSummaryIskLost += parseInt(kill.value(), 10);
     }
   }
 

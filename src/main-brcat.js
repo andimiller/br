@@ -389,6 +389,14 @@ function processUrlParameters( )
       gOptIgnoreInsig = false;
     }
   }
+  var optionParam = gUrlParams[ 'f' ];
+  if ( optionParam != undefined )
+  {
+    if(optionParam == 1){
+      gOptEstimateFighterValues = false;
+    }
+  }
+
   var optionParam = gUrlParams[ 'r' ];
   if ( optionParam != undefined )
   {
