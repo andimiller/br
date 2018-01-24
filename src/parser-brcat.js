@@ -168,7 +168,9 @@ function parseKillRecord(kill, idToName) {
 
   kill.value = function() {
     if (!gOptEstimateFighterValues) { return kill.zkb.totalValue; };
-    let group = _.find( gShipTypes, function( X ) { return X.I == kill.victim.ship_type_id; } ).G;
+    let ship = _.find( gShipTypes, function( X ) { return X.I == kill.victim.ship_type_id; } );
+    if (ship == undefined) { return kill.zkb.totalValue; };
+    let group = ship.G;
     let value = parseInt(this.zkb.totalValue, 10);
     if (group == "Support Fighter")           { return value * 3; };
     if (group == "Heavy Fighter")             { return value * 6; };
