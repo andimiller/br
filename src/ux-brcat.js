@@ -236,7 +236,7 @@ function updateShareLink( )
   
   console.log( param.length + ': ' + param );
   $( '#ux-shareLink' ).val( base + param.join( '&' ));
-  if ((base + param.join('&')) != location.href) {
+  if (((base + param.join('&')) != location.href) && !((base + param.join('&').endsWith("=")))) {
     var currentState = history.state;
     history.pushState(currentState, "EVE Kill Report Repair Tool", '?' + param.join('&'));
   }
