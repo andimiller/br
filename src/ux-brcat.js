@@ -241,7 +241,7 @@ function updateShareLink( )
   console.log(teamGenerated);
   if (((base + param.join('&')) != location.href) && teamGenerated) {
     var currentState = history.state;
-    history.pushState(currentState, "EVE Kill Report Repair Tool", '?' + param.join('&'));
+    history.replaceState(currentState, "EVE Kill Report Repair Tool", '?' + param.join('&'));
   }
 }
 
