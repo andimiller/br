@@ -93,6 +93,7 @@ function initShipTypes( )
 '{"I": 17740,  "N": "Vindicator",                                   "G": "Battleship",                 "O": 1213 },',
 '{"I": 17918,  "N": "Rattlesnake",                                  "G": "Battleship",                 "O": 1214 },',
 '{"I": 17920,  "N": "Bhaalgorn",                                    "G": "Battleship",                 "O": 1215 },',
+'{"I": 47466,  "N": "Praxis",                                       "G": "Battleship",                 "O": 1216 },',
 
                                                                                                        
 // navy bs                                                                                             
