@@ -78,9 +78,9 @@ async function startParsing( )
   const useragent = "user_agent=br.inyour.space+%28Lucia+Denniard%29"
 
   const idToName = new Map([
-    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/characters/names/?"+useragent+"&character_ids=", Array.from(characterIDs), 100), "character_id", "character_name"), 
-    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/corporations/names/?"+useragent+"&corporation_ids=", Array.from(corporationIDs), 100), "corporation_id", "corporation_name"), 
-    ...toMap(await chunkedJson("https://esi.tech.ccp.is/v1/alliances/names/?"+useragent+"&alliance_ids=", Array.from(allianceIDs), 100), "alliance_id", "alliance_name")
+    ...toMap(await chunkedJson("https://esi.evetech.net/v1/characters/names/?"+useragent+"&character_ids=", Array.from(characterIDs), 100), "character_id", "character_name"), 
+    ...toMap(await chunkedJson("https://esi.evetech.net/v2/corporations/names/?"+useragent+"&corporation_ids=", Array.from(corporationIDs), 100), "corporation_id", "corporation_name"), 
+    ...toMap(await chunkedJson("https://esi.evetech.net/v2/alliances/names/?"+useragent+"&alliance_ids=", Array.from(allianceIDs), 100), "alliance_id", "alliance_name")
   ]);
 
   // if length != 0, we got some results back, go ahead and push those results into our global set
