@@ -29,7 +29,9 @@ async function loadKillmails (params, end = params.end, totalPages = 0) {
   var data = await fetchPages(Object.assign(params, { end, totalPages }));
   if (data.length !== 0 && data.length === 200 * 10) {
     const lastKillmail = data[data.length - 1];
-    const killmails = await loadKillmails(params, lastKillmail.killmail_time.replace(/:|-| |T/g,'').substring(0, 10) + "00", totalPages + 10);
+    var d = new Date(lastKillmail.killmail_time);
+    d.setHours(d.getHours() + 1);
+    const killmails = await loadKillmails(params, d.toISOString().replace(/:|-| |T/g,'').substring(0, 10) + "00", totalPages + 10);
     const lastKillIndex = killmails.findIndex(({ killmail_id }) => killmail_id === lastKillmail.killmail_id);
     return data.concat(killmails.slice(lastKillIndex + 1));
   } else {
