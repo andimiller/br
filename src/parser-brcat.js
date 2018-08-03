@@ -25,12 +25,8 @@ const json = (...args) => fetch(...args).then(res => res.json());
 
 const chunkedJson = (url, ids, size) => Promise.all(ids.chunk(size).map(chunk => json(url, { method: "POST", body: "[" + chunk.join() + "]" }))).then(chunks => [].concat(...chunks));
 
-async function loadKillmails (params, start = params.start, totalPages = 0) {
-  var data = await fetchPages(Object.assign(params, { start, totalPages }));
-  data = data.filter(km => {
-    const kmtime = Date.parse(km.killmail_time);
-    return ((kmtime > params.realStart) && (kmtime < params.realEnd));
-  })
+async function loadKillmails (params, end = params.end, totalPages = 0) {
+  var data = await fetchPages(Object.assign(params, { end, totalPages }));
   if (data.length !== 0 && data.length === 200 * 10) {
     const lastKillmail = data[data.length - 1];
     const killmails = await loadKillmails(params, lastKillmail.killmail_time.replace(/:|-| |T/g,'').substring(0, 10) + "00", totalPages + 10);
@@ -50,6 +46,7 @@ Object.defineProperty(Array.prototype, 'chunk', {
   }
 });
 
+//const url = ({ type: { name, id }, start, end, page }) => `https://zkillboard.com/api/kills/${name}/${id}/endTime/${end}/page/${page}/`;
 const url = ({ type: { name, id }, start, end, page }) => `https://zkillboard.com/api/kills/${name}/${id}/startTime/${start}/endTime/${end}/page/${page}/`;
 
 const toMap = (arr, key, value) => new Map(arr.map(el => [el[key], el[value]]));
