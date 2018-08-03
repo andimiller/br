@@ -46,7 +46,6 @@ Object.defineProperty(Array.prototype, 'chunk', {
   }
 });
 
-//const url = ({ type: { name, id }, start, end, page }) => `https://zkillboard.com/api/kills/${name}/${id}/endTime/${end}/page/${page}/`;
 const url = ({ type: { name, id }, start, end, page }) => `https://zkillboard.com/api/kills/${name}/${id}/startTime/${start}/endTime/${end}/page/${page}/`;
 
 const toMap = (arr, key, value) => new Map(arr.map(el => [el[key], el[value]]));
