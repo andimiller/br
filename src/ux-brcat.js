@@ -63,7 +63,11 @@ async function startParsing( )
   updateShareLink( );
   gProcessingTime = new Date( );
 
-  const killmails = [].concat(...await Promise.all(gEntryWindowData.map(entryWindow => loadEntryWindowData(entryWindow))));
+  const useragent = "user_agent=br.inyour.space+%28Lucia+Denniard%29"
+
+  const zkillmails = [].concat(...await Promise.all(gEntryWindowData.map(entryWindow => loadEntryWindowData(entryWindow))));
+  const killmails = [].concat(...await Promise.all(zkillmails.map(k => fetch("https://esi.evetech.net/v1/killmails/"+k.killmail_id+"/"+k.zkb.hash+"?"+useragent).then(function (b) { return $.extend(k, b.json());} ))));
+
 
   const { characterIDs, corporationIDs, allianceIDs } = [].concat(...killmails.map(({ victim, attackers }) => [victim].concat(attackers))).reduce((p, { character_id, corporation_id, alliance_id }) => {
     if (character_id)
@@ -81,7 +85,6 @@ async function startParsing( )
     Array.from(allianceIDs),
   );
 
-  const useragent = "user_agent=br.inyour.space+%28Lucia+Denniard%29"
 
   const idToName = new Map([
     ...toMap(await chunkedJson("https://esi.evetech.net/v2/universe/names/?"+useragent, ids, 1000), "id", "name")
