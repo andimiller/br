@@ -68,8 +68,8 @@ async function startParsing( )
   const zkillmails = [].concat(...await Promise.all(gEntryWindowData.map(entryWindow => loadEntryWindowData(entryWindow))));
   const killmails = [].concat(...await Promise.all(zkillmails.map(k => fetch("https://esi.evetech.net/v1/killmails/"+k.killmail_id+"/"+k.zkb.hash+"?"+useragent).then(function (b) { return $.extend(k, b.json());} ))));
 
-  Console.log("kms:");
-  Console.log(killmails);
+  console.log("kms:");
+  console.log(killmails);
 
 
   const { characterIDs, corporationIDs, allianceIDs } = [].concat(...killmails.map(({ victim, attackers }) => [victim].concat(attackers))).reduce((p, { character_id, corporation_id, alliance_id }) => {
