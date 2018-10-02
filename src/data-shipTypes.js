@@ -390,6 +390,7 @@ function initShipTypes( )
 '{"I": 17619,  "N": "Caldari Navy Hookbill",                        "G": "Frigate",                    "O": 5512 },',
 '{"I": 17841,  "N": "Federation Navy Comet",                        "G": "Frigate",                    "O": 5513 },',
 '{"I": 17812,  "N": "Republic Fleet Firetail",                      "G": "Frigate",                    "O": 5514 },',
+'{"I": 37453,  "N": "Crucifier Navy Issue",                         "G": "Frigate",                    "O": 5515 },',
                                                                                                        
 // npc frigates                                                                                        
 '{"I": 3768,   "N": "Amarr Police Frigate",                         "G": "Frigate",                    "O": 5521 },',
