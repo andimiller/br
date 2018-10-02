@@ -66,7 +66,7 @@ async function startParsing( )
   const useragent = "user_agent=br.inyour.space+%28Lucia+Denniard%29"
 
   const zkillmails = [].concat(...await Promise.all(gEntryWindowData.map(entryWindow => loadEntryWindowData(entryWindow))));
-  const killmails = [].concat(...await Promise.all(zkillmails.map(k => fetch("https://esi.evetech.net/v1/killmails/"+k.killmail_id+"/"+k.zkb.hash+"?"+useragent).then(function (b) { return $.extend(k, b.json());} ))));
+  const killmails = [].concat(...await Promise.all(zkillmails.map(k => fetch("https://esi.evetech.net/v1/killmails/"+k.killmail_id+"/"+k.zkb.hash+"?"+useragent).then(function (b) { return Object.assign(k, b.json());} ))));
 
   console.log("kms:");
   console.log(killmails);
