@@ -94,6 +94,7 @@ function initShipTypes( )
 '{"I": 17918,  "N": "Rattlesnake",                                  "G": "Battleship",                 "O": 1214 },',
 '{"I": 17920,  "N": "Bhaalgorn",                                    "G": "Battleship",                 "O": 1215 },',
 '{"I": 47466,  "N": "Praxis",                                       "G": "Battleship",                 "O": 1216 },',
+'{"I": 47271,  "N": "Leshak",                                       "G": "Battleship",                 "O": 1217 },',
 
                                                                                                        
 // navy bs                                                                                             
@@ -234,6 +235,7 @@ function initShipTypes( )
 '{"I": 17715,  "N": "Gila",                                         "G": "Cruiser",                    "O": 3603 },',
 '{"I": 17718,  "N": "Phantasm",                                     "G": "Cruiser",                    "O": 3604 },',
 '{"I": 17722,  "N": "Vigilant",                                     "G": "Cruiser",                    "O": 3605 },',
+'{"I": 47270,  "N": "Vedmak",                                       "G": "Cruiser",                    "O": 3606 },',
 
                                                                                                        
 // navy cruisers                                                                                       
@@ -381,6 +383,7 @@ function initShipTypes( )
 '{"I": 17924,  "N": "Succubus",                                     "G": "Frigate",                    "O": 5504 },',
 '{"I": 17930,  "N": "Worm",                                         "G": "Frigate",                    "O": 5505 },',
 '{"I": 32880,  "N": "Venture",                                      "G": "Frigate",                    "O": 5506 },',
+'{"I": 47269,  "N": "Damavik",                                      "G": "Frigate",                    "O": 5507 },',
                                                                                                        
 // navy frigates                                                                                       
 '{"I": 17703,  "N": "Imperial Navy Slicer",                         "G": "Frigate",                    "O": 5511 },',
