@@ -159,6 +159,7 @@ function initShipTypes( )
                                                                                                        
 // faction bc                                                                                          
 '{"I": 3756,   "N": "Gnosis",                                       "G": "Combat Battlecruiser",       "O": 2205 },',
+'{"I": 49711,  "N": "Drekavac",                                     "G": "Combat Battlecruiser",       "O": 2206 },',
                                                                                                        
 // t1 bc                                                                                               
 '{"I": 24696,  "N": "Harbinger",                                    "G": "Combat Battlecruiser",       "O": 2221 },',
@@ -236,6 +237,7 @@ function initShipTypes( )
 '{"I": 17718,  "N": "Phantasm",                                     "G": "Cruiser",                    "O": 3604 },',
 '{"I": 17722,  "N": "Vigilant",                                     "G": "Cruiser",                    "O": 3605 },',
 '{"I": 47270,  "N": "Vedmak",                                       "G": "Cruiser",                    "O": 3606 },',
+'{"I": 49712,  "N": "Rodiva",                                       "G": "Cruiser",                    "O": 3607 },',
 
                                                                                                        
 // navy cruisers                                                                                       
@@ -296,6 +298,11 @@ function initShipTypes( )
 '{"I": 22464,  "N": "Flycatcher",                                   "G": "Interdictor",                "O": 4002 },',
 '{"I": 22460,  "N": "Eris",                                         "G": "Interdictor",                "O": 4003 },',
 '{"I": 22456,  "N": "Sabre",                                        "G": "Interdictor",                "O": 4004 },',
+
+///////////////////////////////////////////////////////////// faction destroyers ////////////////////////////////////////////
+
+'{"I": 49710,  "N": "Kikimora",                                     "G": "Destroyer",                  "O": 4050 },',
+
                                                                                                        
 ///////////////////////////////////////////////////////////// destroyers  /////////////////////////////////////////////////
 '{"I": 32848,  "N": "Aliastra Catalyst",                            "G": "Destroyer",                  "O": 4101 },',
